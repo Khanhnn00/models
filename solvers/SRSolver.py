@@ -163,26 +163,6 @@ class SRSolver(BaseSolver):
             loss_pix = self.criterion_pix(self.SR, self.HR)
             return loss_pix.item()
             
-    def test2(self):
-        self.model.eval()
-        with torch.no_grad():
-            forward_func = self._overlap_crop_forward2 if self.use_chop else self.model.forward
-            if self.self_ensemble and not self.is_train:
-                SR = self._forward_x8(self.LR, forward_func)
-            else:
-                SR = forward_func(self.LR)
-
-            if isinstance(SR, list):
-                self.SR = SR[-1]
-            else:
-                self.SR = SR
-
-        self.model.train()
-        if self.is_train:
-            loss_pix = self.criterion_pix(self.SR, self.HR)
-            return loss_pix.item()
-
-
 
     def _forward_x8(self, x, forward_function):
         """
@@ -263,7 +243,10 @@ class SRSolver(BaseSolver):
                 if bic is not None:
                     bic_batch = torch.cat(bic_list[i:(i + n_GPUs)], dim=0)
 
-                sr_batch_temp = self.model(lr_batch, is_test=True)
+                if opt['networks']['which_model'] == "RANDOM":
+                    sr_batch_temp = self.model(lr_batch, is_test=True)
+                else:
+                    sr_batch_temp = self.model(lr_batch)
 
                 if isinstance(sr_batch_temp, list):
                     sr_batch = sr_batch_temp[-1]
@@ -322,37 +305,6 @@ class SRSolver(BaseSolver):
             torch.save(ckp, filename.replace('last_ckp','epoch_%d_ckp'%epoch))
 
 
-    # def load(self):
-        # """
-        # load or initialize network
-        # """
-        # if (self.is_train and self.opt['solver']['pretrain']) or not self.is_train:
-            # model_path = self.opt['solver']['pretrained_path']
-            # if model_path is None: raise ValueError("[Error] The 'pretrained_path' does not declarate in *.json")
-
-            # print('===> Loading model from [%s]...' % model_path)
-            # if self.is_train:
-                # checkpoint = torch.load(model_path)
-                # load_func = self.model.load_state_dict if isinstance(self.model, nn.DataParallel) \
-                    # else self.model.module.load_state_dict
-                # load_func(checkpoint)
-
-                # if self.opt['solver']['pretrain'] == 'resume':
-                    # self.cur_epoch = checkpoint['epoch'] + 1
-                    # self.optimizer.load_state_dict(checkpoint['optimizer'])
-                    # self.best_pred = checkpoint['best_pred']
-                    # self.best_epoch = checkpoint['best_epoch']
-                    # self.records = checkpoint['records']
-
-            # else:
-                # checkpoint = torch.load(model_path)
-                # if 'state_dict' in checkpoint.keys(): checkpoint = checkpoint['state_dict']
-                # load_func = self.model.load_state_dict if isinstance(self.model, nn.DataParallel) \
-                    # else self.model.module.load_state_dict
-                # load_func(checkpoint)
-
-        # else:
-            # self._net_init()
     def load(self):
         """
         load or initialize network
