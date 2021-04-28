@@ -1,0 +1,5 @@
+# SRbenchmark/**
+# experiments/**
+# results/**
+# models/**
+*.pth

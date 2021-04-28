@@ -1,0 +1,40 @@
+{
+    "mode": "sr",
+    "use_cl": false,
+    "gpu_ids": [0],
+
+    "scale": 4,
+    "degradation": "BD",
+    "is_train": false,
+    "use_chop": true,
+    "rgb_range": 255,
+    "self_ensemble": false,
+
+    "datasets": {
+        "test_set1": {
+            "mode": "LRHR",
+            "dataroot_HR": "./SRbenchmark/HR_x4",
+            "dataroot_LR": "./SRbenchmark/LR_x4",
+            "data_type": "img"
+        },
+		"test_set2": {
+            "mode": "LRHR",
+            "dataroot_HR": "./SRbenchmark/HR_x4",
+            "dataroot_LR": "./SRbenchmark/HR_x4_lr_BD",
+            "data_type": "img"
+        }
+    },
+
+    "networks": {
+        "which_model": "RANDOM",
+        "num_features": 64,
+        "in_channels": 3,
+        "out_channels": 3,
+        "num_blocks": 3,
+        "num_groups": 6
+    },
+
+    "solver": {
+        "pretrained_path": "./experiments/RANDOM_in3f64_x4/epochs/best_ckp.pth"
+    }
+}
