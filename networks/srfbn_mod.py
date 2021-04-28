@@ -219,12 +219,13 @@ class SRFBN_mod(nn.Module):
         feat_blur = self.conv_in(x_blur)
         feat_blur = self.feat_in(feat_blur)
 
-        x = feat_blur + faet_x
+        x = feat_blur + feat_x
         outs = []
         for _ in range(self.num_steps):
             h = self.block(x)
 
-            h = self.conv_out(self.out(h)) + torch.add(inter_res, inter_blur_res)
+            # h = self.conv_out(self.out(h)) + torch.add(inter_res, inter_blur_res)
+            h = torch.add(inter_res, self.conv_out(self.out(h)))
             h = self.add_mean(h)
             outs.append(h)
 

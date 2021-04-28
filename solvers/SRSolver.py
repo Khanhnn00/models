@@ -16,6 +16,7 @@ from utils import util
 class SRSolver(BaseSolver):
     def __init__(self, opt):
         super(SRSolver, self).__init__(opt)
+        self.opt = opt
         self.train_opt = opt['solver']
         self.LR = self.Tensor()
         self.HR = self.Tensor()
@@ -243,7 +244,7 @@ class SRSolver(BaseSolver):
                 if bic is not None:
                     bic_batch = torch.cat(bic_list[i:(i + n_GPUs)], dim=0)
 
-                if opt['networks']['which_model'] == "RANDOM":
+                if self.opt['networks']['which_model'] == "RANDOM":
                     sr_batch_temp = self.model(lr_batch, is_test=True)
                 else:
                     sr_batch_temp = self.model(lr_batch)
