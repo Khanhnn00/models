@@ -7,7 +7,7 @@ from solvers import create_solver
 from data import create_dataloader
 from data import create_dataset
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "6,7"
+os.environ["CUDA_VISIBLE_DEVICES"] = "4,5"
 
 def main():
     parser = argparse.ArgumentParser(description='Test Super Resolution Models')
@@ -91,16 +91,16 @@ def main():
                                                                       sum(total_time)/len(total_time)))
 
         # save SR results for further evaluation on MATLAB
-        if need_HR:
-            save_img_path = os.path.join('./results/SR/'+degrad, model_name, bm, "x%d"%scale)
-        else:
-            save_img_path = os.path.join('./results/SR/'+bm, model_name, "x%d"%scale)
+        # if need_HR:
+        #     save_img_path = os.path.join('./results/SR/'+degrad, model_name, bm, "x%d"%scale)
+        # else:
+        #     save_img_path = os.path.join('./results/SR/'+bm, model_name, "x%d"%scale)
 
-        print("===> Saving SR images of [%s]... Save Path: [%s]\n" % (bm, save_img_path))
+        # print("===> Saving SR images of [%s]... Save Path: [%s]\n" % (bm, save_img_path))
 
-        if not os.path.exists(save_img_path): os.makedirs(save_img_path)
-        for img, name in zip(sr_list, path_list):
-            imageio.imwrite(os.path.join(save_img_path, name), img)
+        # if not os.path.exists(save_img_path): os.makedirs(save_img_path)
+        # for img, name in zip(sr_list, path_list):
+        #     imageio.imwrite(os.path.join(save_img_path, name), img)
 
     print("==================================================")
     print("===> Finished !")
