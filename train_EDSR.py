@@ -10,7 +10,7 @@ from solvers import create_solver
 from data import create_dataloader
 from data import create_dataset
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+os.environ["CUDA_VISIBLE_DEVICES"] = "4,5"
 
 def main():
     parser = argparse.ArgumentParser(description='Train Super Resolution Models')

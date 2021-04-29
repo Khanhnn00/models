@@ -23,7 +23,7 @@ def main():
     if seed is None: seed = random.randint(1, 10000)
     print("===> Random Seed: [%d]"%seed)
     random.seed(seed)
-    torch.manual_seed(seed)
+    torch.manual_seed(seed) 
 
     # create train and val dataloader
     for phase, dataset_opt in sorted(opt['datasets'].items()):

@@ -13,7 +13,8 @@ def main():
     parser = argparse.ArgumentParser(description='Test Super Resolution Models')
     # parser.add_argument('-opt', type=str, required=True, help='Path to options JSON file.')
     # opt = option.parse(parser.parse_args().opt)
-    opt = option.parse('./options/test/test_RANDOM.json')
+    # opt = option.parse('./options/test/test_RANDOM.json')
+    opt = option.parse('./options/test/test_EDSR.json')
     opt = option.dict_to_nonedict(opt)
 
     # initial configure

@@ -13,20 +13,20 @@
     "datasets": {
         "train": {
             "mode": "LRHR",
-            "dataroot_HR": "./dataset/result/HR_x4_npy",
-            "dataroot_LR": "./dataset/result/LR_x4_npy",
+            "dataroot_HR": "../dataset/result/HR_x4_npy",
+            "dataroot_LR": "../dataset/result/LR_x4_npy",
             "data_type": "npy",
             "n_workers": 4,
-            "batch_size": 16,
+            "batch_size": 64,
             "LR_size": 48,
             "use_flip": true,
             "use_rot": true,
-            "noise": "."
+            "noise": "G30"
         },
         "val": {
             "mode": "LRHR",
-            "dataroot_HR": "./SRbenchmark/valid_div",
-            "dataroot_LR": "./SRbenchmark/valid_div_x4",
+            "dataroot_HR": "../SRbenchmark/HR_x4",
+            "dataroot_LR": "../SRbenchmark/LR_DN",
             "data_type": "img"
         }
     },
@@ -54,7 +54,7 @@
         "split_batch": 2,
         "save_ckp_step": 50,
         "save_vis_step": 1,
-        "pretrain": null,
+        "pretrain": "resume",
         "pretrained_path": "./experiments/EDSR_in3f256_x4/epochs/last_ckp.pth",
         "cl_weights": [1.0, 1.0, 1.0, 1.0]
     }

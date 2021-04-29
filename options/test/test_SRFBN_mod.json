@@ -1,10 +1,10 @@
 {
     "mode": "sr",
-    "use_cl": true,
+    "use_cl": false,
     "gpu_ids": [0],
 
     "scale": 4,
-    "degradation": "BI",
+    "degradation": "BD",
     "is_train": false,
     "use_chop": true,
     "rgb_range": 255,
@@ -13,15 +13,16 @@
     "datasets": {
         "test_set1": {
             "mode": "LRHR",
-            "dataroot_HR": "./results/HR/Set5/x4",
-            "dataroot_LR": "./results/LR/LRBI/Set5/x4",
+            "dataroot_HR": "../SRbenchmark/HR_x4",
+            "dataroot_LR": "../SRbenchmark/LR_x4",
             "data_type": "img"
         },
-        "test_set3": {
-             "mode": "LR",
-             "dataroot_LR": "./results/LR/MyImage",
-             "data_type": "img"
-         }
+		"test_set2": {
+            "mode": "LRHR",
+            "dataroot_HR": "../SRbenchmark/HR_x4",
+            "dataroot_LR": "../SRbenchmark/HR_x4_lr_BD",
+            "data_type": "img"
+        }
     },
 
     "networks": {
@@ -34,6 +35,6 @@
     },
 
     "solver": {
-        "pretrained_path": "./models/SRFBN_x4_BI.pth"
+        "pretrained_path": "./experiments/SRFBN_MOD_in3f64_x4/epochs/best_ckp.pth"
     }
 }
