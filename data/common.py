@@ -176,6 +176,29 @@ def get_patch(img_in, img_tar, patch_size, scale):
 
     return img_in, img_tar
 
+def get_patch_lrx(img_in, img_inx, img_tar, patch_size, scale):
+    ih, iw = img_in.shape[:2]
+    oh, ow = img_tar.shape[:2]
+
+    ip = patch_size
+
+    if ih == oh:
+        tp = ip
+        ix = random.randrange(0, iw - ip + 1)
+        iy = random.randrange(0, ih - ip + 1)
+        tx, ty = ix, iy
+    else:
+        tp = ip * scale
+        ix = random.randrange(0, iw - ip + 1)
+        iy = random.randrange(0, ih - ip + 1)
+        tx, ty = scale * ix, scale * iy
+
+    img_in = img_in[iy:iy + ip, ix:ix + ip, :]
+    img_inx = img_inx[iy:iy + ip, ix:ix + ip, :]
+    img_tar = img_tar[ty:ty + tp, tx:tx + tp, :]
+
+    return img_in, img_inx, img_tar
+
 
 def add_noise(x, noise='.'):
     if noise is not '.':

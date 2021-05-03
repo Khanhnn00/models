@@ -37,6 +37,11 @@ def main():
             val_set = create_dataset(dataset_opt)
             val_loader = create_dataloader(val_set, dataset_opt)
             print('===> Val Dataset: %s   Number of images: [%d]' % (val_set.name(), len(val_set)))
+        
+        elif phase == 'val2':
+            val_set2 = create_dataset(dataset_opt)
+            val_loader2 = create_dataloader(val_set2, dataset_opt)
+            print('===> Val Dataset: %s   Number of images: [%d]' % (val_set2.name(), len(val_set2)))
 
         else:
             raise NotImplementedError("[Error] Dataset phase [%s] in *.json is not recognized." % phase)
@@ -120,6 +125,27 @@ def main():
                                                                                               solver_log['best_pred'],
                                                                                               solver_log['best_epoch']))
 
+        psnr_list2 = []
+        ssim_list2 = []
+        val_loss_list2 = []
+
+        for iter, batch in enumerate(val_loader2):
+            solver.feed_data(batch)
+            iter_loss = solver.test()
+            val_loss_list2.append(iter_loss)
+
+            # calculate evaluation metrics
+            visuals = solver.get_current_visual()
+            psnr, ssim = util.calc_metrics(visuals['SR'], visuals['HR'], crop_border=scale, test_Y=False)
+            psnr_list2.append(psnr)
+            ssim_list2.append(ssim)
+
+        print("[%s] PSNR: %.2f   SSIM: %.4f   Loss: %.6f" % (val_set2.name(),
+                                                                                              sum(psnr_list2)/len(psnr_list2),
+                                                                                              sum(ssim_list2)/len(ssim_list2),
+                                                                                              sum(val_loss_list2)/len(val_loss_list2)
+                                                                                            ))
+        
         solver.set_current_log(solver_log)
         solver.save_checkpoint(epoch, epoch_is_best)
         solver.save_current_log()

@@ -22,8 +22,8 @@ class DBPN(nn.Module):
             padding = 2
             projection_filter = 12
 
-        feature_extract_1 = B.ConvBlock(in_channels, 128, kernel_size=3, norm_type=norm_type, act_type=act_type)
-        feature_extract_2 = B.ConvBlock(128, num_features, kernel_size=1, norm_type=norm_type, act_type=act_type)
+        self.feature_extract_1 = B.ConvBlock(in_channels, 128, kernel_size=3, norm_type=norm_type, act_type=act_type)
+        self.feature_extract_2 = B.ConvBlock(128, num_features, kernel_size=1, norm_type=norm_type, act_type=act_type)
 
         bp_units = []
         for _ in range(bp_stages-1):
@@ -32,14 +32,20 @@ class DBPN(nn.Module):
                             B.DownprojBlock(num_features, num_features, projection_filter, stride=stride, valid_padding=False,
                                                   padding=padding, norm_type=norm_type, act_type=act_type)])
 
-        last_bp_unit = B.UpprojBlock(num_features, num_features, projection_filter, stride=stride, valid_padding=False,
-                                           padding=padding, norm_type=norm_type, act_type=act_type)
-        conv_hr = B.ConvBlock(num_features, out_channels, kernel_size=1, norm_type=None, act_type=None)
+        self.bp_units = B.sequential(bp_units)
 
-        self.network = B.sequential(feature_extract_1, feature_extract_2, *bp_units, last_bp_unit, conv_hr)
+        self.last_bp_unit = B.UpprojBlock(num_features, num_features, projection_filter, stride=stride, valid_padding=False,
+                                           padding=padding, norm_type=norm_type, act_type=act_type)
+        self.conv_hr = B.ConvBlock(num_features, out_channels, kernel_size=1, norm_type=None, act_type=None)
+
 
     def forward(self, x):
-        return self.network(x)
+        x = self.feature_extract_1(x)
+        x = self.feature_extract_2(x)
+        x = self.bp_units(x)
+        x = self.last_bp_unit(x)
+        x = self.conv_hr(x)
+        return x
 
 class D_DBPN(nn.Module):
     def __init__(self,in_channels, out_channels, num_features, bp_stages, upscale_factor=4, norm_type=None, act_type='prelu'):
@@ -58,16 +64,20 @@ class D_DBPN(nn.Module):
             padding = 2
             projection_filter = 12
 
-        feature_extract_1 = B.ConvBlock(in_channels, 256, kernel_size=3, norm_type=norm_type, act_type=act_type)
-        feature_extract_2 = B.ConvBlock(256, num_features, kernel_size=1, norm_type=norm_type, act_type=act_type)
+        self.feature_extract_1 = B.ConvBlock(in_channels, 256, kernel_size=3, norm_type=norm_type, act_type=act_type)
+        self.feature_extract_2 = B.ConvBlock(256, num_features, kernel_size=1, norm_type=norm_type, act_type=act_type)
 
         bp_units = B.DensebackprojBlock(num_features, num_features, projection_filter, bp_stages, stride=stride, valid_padding=False,
                                                 padding=padding, norm_type=norm_type, act_type=act_type)
+        self.bp_units = B.sequential(bp_units)
+        self.conv_hr = B.ConvBlock(num_features*bp_stages, out_channels, kernel_size=3, norm_type=None, act_type=None)
 
-        conv_hr = B.ConvBlock(num_features*bp_stages, out_channels, kernel_size=3, norm_type=None, act_type=None)
-
-        self.network = B.sequential(feature_extract_1, feature_extract_2, bp_units, conv_hr)
+        # self.network = B.sequential(feature_extract_1, feature_extract_2, bp_units, conv_hr)
 
     def forward(self, x):
-        return self.network(x)
+        x = self.feature_extract_1(x)
+        x = self.feature_extract_2(x)
+        x = self.bp_units(x)
+        x = self.conv_hr(x)
+        return x
 

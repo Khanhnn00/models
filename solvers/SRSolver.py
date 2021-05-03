@@ -19,8 +19,8 @@ class SRSolver(BaseSolver):
         self.opt = opt
         self.train_opt = opt['solver']
         self.LR = self.Tensor()
+        self.LR_x = self.Tensor()
         self.HR = self.Tensor()
-        self.HR_x = self.Tensor()
         self.SR = None
 
         self.records = {'train_loss': [],
@@ -90,8 +90,9 @@ class SRSolver(BaseSolver):
             target = batch['HR']
             self.HR.resize_(target.size()).copy_(target)
             if is_complex:
-                target_x = batch['HR_x']
-                self.HR_x.resize_(target_x.size()).copy_(target_x)
+                input_x = batch['LR_x']
+                self.LR_x.resize_(input_x.size()).copy_(input_x)
+                # print(self.LR_x)
         elif need_HR and not is_train:
             target = batch['HR']
             self.HR.resize_(target.size()).copy_(target)
@@ -108,7 +109,7 @@ class SRSolver(BaseSolver):
                 split_LR = self.LR.narrow(0, i*sub_batch_size, sub_batch_size)
                 split_HR = self.HR.narrow(0, i*sub_batch_size, sub_batch_size)
                 if is_complex:
-                    split_HR_x = self.HR_x.narrow(0, i*sub_batch_size, sub_batch_size)
+                    split_LRx = self.LR_x.narrow(0, i*sub_batch_size, sub_batch_size)
                 if self.use_cl:
                     outputs = self.model(split_LR)
                     if not is_complex:

@@ -96,13 +96,19 @@ def define_net(opt):
                          num_features=opt['num_features'], bp_stages=opt['num_blocks'],
                          upscale_factor=opt['scale'])
 
+    elif which_model == 'D-DBPN_MOD':
+            from .dpbn_mod import D_DBPN_MOD
+            net = D_DBPN_MOD(in_channels=opt['in_channels'], out_channels=opt['out_channels'],
+                            num_features=opt['num_features'], bp_stages=opt['num_blocks'],
+                            upscale_factor=opt['scale'])
+
     elif which_model == 'D-DBPN':
         from .dbpn_arch import D_DBPN
         net = D_DBPN(in_channels=opt['in_channels'], out_channels=opt['out_channels'],
                            num_features=opt['num_features'], bp_stages=opt['num_blocks'],
                            upscale_factor=opt['scale'])
 
-    elif which_model.find('SRFBN') >= 0:
+    elif which_model == 'SRFBN':
         from .srfbn_arch import SRFBN
         net = SRFBN(in_channels=opt['in_channels'], out_channels=opt['out_channels'],
                                   num_features=opt['num_features'], num_steps=opt['num_steps'], num_groups=opt['num_groups'],
@@ -127,11 +133,19 @@ def define_net(opt):
                              num_features=opt['num_features'], num_blocks = opt['num_blocks'], num_layers = opt['num_layers'],
                              upscale_factor=opt['scale'])
 
-    elif which_model.find('EDSR') >= 0:
+    elif which_model == 'EDSR':
+        # print('EDSR')
         from .edsr_arch import EDSR
         net = EDSR(in_channels=opt['in_channels'], out_channels=opt['out_channels'],
                              num_features=opt['num_features'], num_blocks = opt['num_blocks'], res_scale=opt['res_scale'],
                              upscale_factor=opt['scale'])
+
+    elif which_model == 'EDSR_MOD':
+        from .edsr_mod import EDSR_MOD
+        net = EDSR_MOD(in_channels=opt['in_channels'], out_channels=opt['out_channels'],
+                             num_features=opt['num_features'], num_blocks = opt['num_blocks'], res_scale=opt['res_scale'],
+                             upscale_factor=opt['scale'])
+
     elif which_model.find('RANDOM') >= 0:
         from .demo import RANDOM
         net = RANDOM(in_channels=opt['in_channels'], out_channels=opt['out_channels'],

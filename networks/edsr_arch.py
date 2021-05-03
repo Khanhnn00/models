@@ -122,6 +122,7 @@ class EDSR(nn.Module):
         self.tail = nn.Sequential(*m_tail)
 
     def forward(self, x):
+        # print(x.shape)
         x = self.sub_mean(x)
         x = self.head(x)
 

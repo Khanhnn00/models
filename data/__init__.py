@@ -21,6 +21,8 @@ def create_dataset(dataset_opt):
         from data.LRHR_dataset import LRHRDataset as D
     elif mode == 'LRHR_DN_CL':
         from data.LRHR_dataset_DN_CL import LRHRDataset as D
+    elif mode == 'LRHR_EDSR':
+        from data.LRHR_EDSR_mod import LRHRDataset as D
     elif mode == 'LRHR_BD_CL':
         from data.LRHR_dataset_BD_CL import LRHRDataset as D
     else:
