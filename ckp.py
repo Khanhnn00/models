@@ -6,18 +6,18 @@ import torch
 import options.options as option
 from utils import util
 import os
-from solvers import create_solver
+from solvers import create_solver, create_solver_split
 from data import create_dataloader
 from data import create_dataset
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "3,1"
+os.environ["CUDA_VISIBLE_DEVICES"] = "4,5"
 
 def main():
     parser = argparse.ArgumentParser(description='Train Super Resolution Models')
     #	parser.add_argument('-opt', type=str, required=True, help='Path to options JSON file.')
     #	opt = option.parse(parser.parse_args().opt)
-    # opt = option.parse('options/train/train_EDSR_mod.json')
-    opt = option.parse('options/train/train_DPBN_mod.json')
+    opt = option.parse('options/train/train_EDSR_mod.json')
+    # opt = option.parse('options/train/train_DPBN_mod.json')
 
     # random seed
     seed = opt['solver']['manual_seed']
@@ -47,7 +47,8 @@ def main():
         else:
             raise NotImplementedError("[Error] Dataset phase [%s] in *.json is not recognized." % phase)
 
-    solver = create_solver(opt)
+    # solver = create_solver(opt)
+    solver = create_solver_split(opt)
 
     scale = opt['scale']
     model_name = opt['networks']['which_model'].upper()

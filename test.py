@@ -3,18 +3,20 @@ import imageio
 
 import options.options as option
 from utils import util
-from solvers import create_solver
+from solvers import create_solver, create_solver_split
 from data import create_dataloader
 from data import create_dataset
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "4,5"
+os.environ["CUDA_VISIBLE_DEVICES"] = "7"
 
 def main():
     parser = argparse.ArgumentParser(description='Test Super Resolution Models')
     # parser.add_argument('-opt', type=str, required=True, help='Path to options JSON file.')
     # opt = option.parse(parser.parse_args().opt)
     # opt = option.parse('./options/test/test_RANDOM.json')
-    opt = option.parse('./options/test/test_EDSR.json')
+    # opt = option.parse('./options/test/test_EDSR_mod.json')
+    # opt = option.parse('./options/test/test_DPBN_mod.json')
+    # opt = option.parse('./options/test/test_DPBN.json')
     opt = option.dict_to_nonedict(opt)
 
     # initial configure
@@ -35,7 +37,8 @@ def main():
         bm_names.append(test_set.name())
 
     # create solver (and load model)
-    solver = create_solver(opt)
+    # solver = create_solver(opt)
+    solver = create_solver_split(opt)
     # Test phase
     print('===> Start Test')
     print("==================================================")

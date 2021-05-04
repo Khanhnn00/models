@@ -97,10 +97,11 @@ def define_net(opt):
                          upscale_factor=opt['scale'])
 
     elif which_model == 'D-DBPN_MOD':
-            from .dpbn_mod import D_DBPN_MOD
-            net = D_DBPN_MOD(in_channels=opt['in_channels'], out_channels=opt['out_channels'],
-                            num_features=opt['num_features'], bp_stages=opt['num_blocks'],
-                            upscale_factor=opt['scale'])
+        print('D-DPBN_MOD')
+        from .dpbn_mod import D_DBPN_MOD
+        net = D_DBPN_MOD(in_channels=opt['in_channels'], out_channels=opt['out_channels'],
+                        num_features=opt['num_features'], bp_stages=opt['num_blocks'],
+                        upscale_factor=opt['scale'])
 
     elif which_model == 'D-DBPN':
         from .dbpn_arch import D_DBPN
