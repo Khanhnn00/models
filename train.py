@@ -6,7 +6,7 @@ import torch
 import options.options as option
 from utils import util
 import os
-from solvers import create_solver, create_solver_split
+from solvers import create_solver
 from data import create_dataloader
 from data import create_dataset
 
@@ -17,7 +17,8 @@ def main():
     #	parser.add_argument('-opt', type=str, required=True, help='Path to options JSON file.')
     #	opt = option.parse(parser.parse_args().opt)
     # opt = option.parse('options/train/train_EDSR.json')
-    opt = option.parse('options/train/train_DBPN.json')
+    # opt = option.parse('options/train/train_DBPN.json')
+    opt = option.parse('options/train/train_RDN.json')
 
     # random seed
     seed = opt['solver']['manual_seed']
@@ -47,8 +48,8 @@ def main():
         else:
             raise NotImplementedError("[Error] Dataset phase [%s] in *.json is not recognized." % phase)
 
-    # solver = create_solver(opt)
-    solver = create_solver_split(opt) #for mod
+    solver = create_solver(opt)
+    # solver = create_solver_split(opt) #for mod
     scale = opt['scale']
     model_name = opt['networks']['which_model'].upper()
 
