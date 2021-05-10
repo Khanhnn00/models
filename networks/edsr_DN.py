@@ -90,7 +90,7 @@ class Upsampler(nn.Sequential):
 
         super(Upsampler, self).__init__(*m)
 
-class EDSR_MOD(nn.Module):
+class EDSR_DN(nn.Module):
     def __init__(self, in_channels, out_channels, num_features, num_blocks, res_scale, upscale_factor, conv=default_conv):
         super(EDSR_MOD, self).__init__()
 
@@ -128,12 +128,8 @@ class EDSR_MOD(nn.Module):
         self.tail = nn.Sequential(*m_tail)
 
     def forward(self, x, is_test=False):
-        # print(x.shape)
-        # img = img.squeeze(0).permute(1,2,0).detach().cpu().numpy()
+
         if is_test == False:
-            '''
-            BI + DN
-            '''
             noises = np.random.normal(scale=30, size=x.shape)
             noises = noises.round()
             ft = torch.from_numpy(noises.copy()).short().cuda()
@@ -141,16 +137,10 @@ class EDSR_MOD(nn.Module):
             x_noise = x.short() + ft.short()
             x_noise = torch.clamp(x_noise, min=0, max=255).type(torch.uint8)
 
-            x = self.sub_mean(x)
-            feat_x = self.head(x)
-
             x_noise = self.sub_mean(x_noise.float())
             feat_noise = self.head(x_noise)
 
-            #weighting
-            p = self.weighting(feat_noise)
-
-            x = (feat_x*(1-p)) + (feat_noise*(p))
+            x = feat_noise
 
             res = self.body(x)
             res += x

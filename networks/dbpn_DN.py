@@ -50,7 +50,7 @@ class DBPN(nn.Module):
         x = self.conv_hr(x)
         return x
 
-class D_DBPN_MOD(nn.Module):
+class D_DBPN_DN(nn.Module):
     def __init__(self,in_channels, out_channels, num_features, bp_stages, upscale_factor=4, norm_type=None, act_type='prelu'):
         super(D_DBPN_MOD, self).__init__()
 
@@ -86,20 +86,14 @@ class D_DBPN_MOD(nn.Module):
             x_noise = x.short() + ft.short()
             x_noise = torch.clamp(x_noise, min=0, max=255).type(torch.uint8)
 
-            ft_x = self.feature_extract_1(x)
-            ft_n = self.feature_extract_1(x_noise.float())
-            ft_x = self.feature_extract_2(ft_x)
-            ft_n = self.feature_extract_2(ft_n)
-
-            x = ft_x+ft_n
-
+            x = self.feature_extract_1(x_noise.float())
+            x = self.feature_extract_2(x)
             x = self.bp_units(x)
             x = self.conv_hr(x)
             return x
         else:
             x = self.feature_extract_1(x)
             x = self.feature_extract_2(x)
-            x = x.mul_(2)
             x = self.bp_units(x)
             x = self.conv_hr(x)
             return x

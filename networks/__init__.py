@@ -96,6 +96,12 @@ def define_net(opt):
                          num_features=opt['num_features'], bp_stages=opt['num_blocks'],
                          upscale_factor=opt['scale'])
 
+    elif which_model == 'D-DBPN':
+        from .dbpn_arch import D_DBPN
+        net = D_DBPN(in_channels=opt['in_channels'], out_channels=opt['out_channels'],
+                           num_features=opt['num_features'], bp_stages=opt['num_blocks'],
+                           upscale_factor=opt['scale'])
+
     elif which_model == 'D-DBPN_MOD':
         print('D-DPBN_MOD')
         from .dpbn_mod import D_DBPN_MOD
@@ -103,21 +109,16 @@ def define_net(opt):
                         num_features=opt['num_features'], bp_stages=opt['num_blocks'],
                         upscale_factor=opt['scale'])
 
-    elif which_model == 'D-DBPN':
-        from .dbpn_arch import D_DBPN
-        net = D_DBPN(in_channels=opt['in_channels'], out_channels=opt['out_channels'],
-                           num_features=opt['num_features'], bp_stages=opt['num_blocks'],
-                           upscale_factor=opt['scale'])
+    elif which_model == 'D-DBPN_DN':
+        print('D-DPBN_DN')
+        from .dpbn_DN import D_DBPN_DN
+        net = D_DBPN_DN(in_channels=opt['in_channels'], out_channels=opt['out_channels'],
+                        num_features=opt['num_features'], bp_stages=opt['num_blocks'],
+                        upscale_factor=opt['scale'])
 
     elif which_model == 'SRFBN':
         from .srfbn_arch import SRFBN
         net = SRFBN(in_channels=opt['in_channels'], out_channels=opt['out_channels'],
-                                  num_features=opt['num_features'], num_steps=opt['num_steps'], num_groups=opt['num_groups'],
-                                  upscale_factor=opt['scale'])
-
-    elif which_model.find('SRFBN_mod') >= 0:
-        from .srfbn_mod import SRFBN_mod
-        net = SRFBN_mod(in_channels=opt['in_channels'], out_channels=opt['out_channels'],
                                   num_features=opt['num_features'], num_steps=opt['num_steps'], num_groups=opt['num_groups'],
                                   upscale_factor=opt['scale'])
 
@@ -133,11 +134,7 @@ def define_net(opt):
         net = RDN(in_channels=opt['in_channels'], out_channels=opt['out_channels'],
                              num_features=opt['num_features'], num_blocks = opt['num_blocks'], num_layers = opt['num_layers'],
                              upscale_factor=opt['scale'])
-    elif which_model.find('AE') >= 0:
-        from .ae_arch import RDN
-        net = RDN(in_channels=opt['in_channels'], out_channels=opt['out_channels'],
-                             num_features=opt['num_features'], num_blocks = opt['num_blocks'], num_layers = opt['num_layers'],
-                             upscale_factor=opt['scale'])
+
 
     elif which_model == 'EDSR':
         # print('EDSR')
@@ -152,7 +149,13 @@ def define_net(opt):
                              num_features=opt['num_features'], num_blocks = opt['num_blocks'], res_scale=opt['res_scale'],
                              upscale_factor=opt['scale'])
 
-    elif which_model.find('RANDOM') >= 0:
+    elif which_model == 'EDSR_DN':
+        from .edsr_DN import EDSR_DN
+        net = EDSR_DN(in_channels=opt['in_channels'], out_channels=opt['out_channels'],
+                             num_features=opt['num_features'], num_blocks = opt['num_blocks'], res_scale=opt['res_scale'],
+                             upscale_factor=opt['scale'])
+
+    elif which_model == 'RANDOM':
         from .demo import RANDOM
         net = RANDOM(in_channels=opt['in_channels'], out_channels=opt['out_channels'],
                                   num_features=opt['num_features'], num_blocks=opt['num_blocks'], num_groups=opt['num_groups'], 
