@@ -4,6 +4,8 @@ import numpy as np
 import scipy.misc as misc
 import imageio
 from tqdm import tqdm
+from PIL import Image
+import torch
 
 IMG_EXTENSIONS = ['.jpg', '.JPG', '.jpeg', '.JPEG', '.png', '.PNG', '.ppm', '.PPM', '.bmp', '.BMP']
 BINARY_EXTENSIONS = ['.npy']
@@ -65,12 +67,49 @@ def get_image_paths(data_type, dataroot):
             raise NotImplementedError("[Error] Data_type [%s] is not recognized." % data_type)
     return paths
 
-data_type = 'npy'
-# dataroot_HR = '../dataset/Flickr2K/Flickr2K_HR'
-# dataroot_LR = '../dataset/Flickr2K/Flickr2K_LR_bicubic/X4'
-# dataroot_valid = '../dataset/DIV2K/DIV2K_valid_HR'
+def create_BI_DN(old_path, new_path):
 
-# dataroot_HR = './dataset/result/HR_x4_hrx_BD'
-dataroot_LR = './dataset/result/HR_x4_lr_BD'
-# get_image_paths(data_type, dataroot_HR)
-get_image_paths(data_type, dataroot_LR)
+    print('===> Creating BI and DN files in [%s]' % new_path)
+    img_paths = sorted(_get_paths_from_images(old_path))
+    print(len(img_paths))
+    path_bar = tqdm(img_paths)
+    for v in path_bar:
+        img = imageio.imread(v, pilmode='RGB')
+        img_t = np.ascontiguousarray(img).astype(np.uint8)
+
+        img_bi = Image.fromarray(img_t, mode='RGB')
+        ext = os.path.splitext(os.path.basename(v))[-1]
+        name_sep = os.path.basename(v.replace(ext, '_BI.png'))
+        img_bi.save(os.path.join(new_path, name_sep))
+
+        img_t = torch.from_numpy(img_t).permute(2,0,1).unsqueeze(0)
+
+        noises = np.random.normal(scale=30, size=img_t.shape)   #edit this scale
+        noises = noises.round()
+        noises = torch.from_numpy(noises).short()   #It's better to represent this kernel with int16
+
+        img_noise = img_t.short() + noises  #so do ur image
+        img_noise = torch.clamp(img_noise, min=0, max=255).type(torch.uint8)    #remember to change it back to uint8
+        
+        img_noise = img_noise.squeeze(0).permute(1,2,0).detach().cpu().numpy()
+        img_noise = Image.fromarray(img_noise, mode='RGB')
+        ext = os.path.splitext(os.path.basename(v))[-1]
+        name_sep = os.path.basename(v.replace(ext, '_DN.png'))
+        img_noise.save(os.path.join(new_path, name_sep))
+
+# data_type = 'npy'
+# # dataroot_HR = '../dataset/Flickr2K/Flickr2K_HR'
+# # dataroot_LR = '../dataset/Flickr2K/Flickr2K_LR_bicubic/X4'
+# # dataroot_valid = '../dataset/DIV2K/DIV2K_valid_HR'
+
+# # dataroot_HR = './dataset/result/HR_x4_hrx_BD'
+# dataroot_LR = './dataset/result/HR_x4_lr_BD'
+# # get_image_paths(data_type, dataroot_HR)
+# get_image_paths(data_type, dataroot_LR)
+
+old_pth_HR = '../dataset/result/HR_x4'
+new_pth_HR = '../dataset/result/HR_BIDN'
+old_pth_LR = '../dataset/result/LR_x4'
+new_pth_LR = '../dataset/result/LR_BIDN'
+create_BI_DN(old_pth_HR, new_pth_HR)
+create_BI_DN(old_pth_LR, new_pth_LR)

@@ -7,8 +7,6 @@ import torch
 import torch.nn as nn
 import numpy as np
 
-    
-
 
 def default_conv(in_channels, out_channels, kernel_size, bias=True):
     return nn.Conv2d(
@@ -104,6 +102,11 @@ class EDSR_MOD(nn.Module):
         self.sub_mean = MeanShift()
         self.add_mean = MeanShift(sign=1)
 
+        self.weighting = nn.Sequential(
+            nn.AdaptiveAvgPool2d(1),
+            nn.Sigmoid()
+        )
+
         # define head module
         m_head = [conv(in_channels, n_feats, kernel_size)]
 
@@ -128,38 +131,26 @@ class EDSR_MOD(nn.Module):
         # print(x.shape)
         # img = img.squeeze(0).permute(1,2,0).detach().cpu().numpy()
         if is_test == False:
+            '''
+            BI + DN
+            '''
             noises = np.random.normal(scale=30, size=x.shape)
             noises = noises.round()
             ft = torch.from_numpy(noises.copy()).short().cuda()
 
             x_noise = x.short() + ft.short()
-            # print(x)
             x_noise = torch.clamp(x_noise, min=0, max=255).type(torch.uint8)
 
-            # x = self.sub_mean(x)
-            # feat_x = self.head(x)
-
-            # x_noise = self.sub_mean(x_noise.float())
-            # feat_noise = self.head(x_noise)
-
-            # x = feat_x + feat_noise
-
-            # res = self.body(x)
-            # res += x
-
-            # x = self.tail(res)
-            # x = self.add_mean(x)
-
-            # return x 
-
-            '''
-            DN only
-            '''
+            x = self.sub_mean(x)
+            feat_x = self.head(x)
 
             x_noise = self.sub_mean(x_noise.float())
             feat_noise = self.head(x_noise)
 
-            x = feat_noise
+            #weighting
+            p = self.weighting(feat_noise)
+
+            x = (feat_x*(1-p)) + (feat_noise*(p))
 
             res = self.body(x)
             res += x
@@ -168,6 +159,29 @@ class EDSR_MOD(nn.Module):
             x = self.add_mean(x)
 
             return x 
+
+            '''
+            DN only
+            '''
+            # noises = np.random.normal(scale=30, size=x.shape)
+            # noises = noises.round()
+            # ft = torch.from_numpy(noises.copy()).short().cuda()
+
+            # x_noise = x.short() + ft.short()
+            # x_noise = torch.clamp(x_noise, min=0, max=255).type(torch.uint8)
+
+            # x_noise = self.sub_mean(x_noise.float())
+            # feat_noise = self.head(x_noise)
+
+            # x = feat_noise
+
+            # res = self.body(x)
+            # res += x
+
+            # x = self.tail(res)
+            # x = self.add_mean(x)
+
+            # return x 
         else:
             x = self.sub_mean(x)
             x = self.head(x)

@@ -24,9 +24,12 @@ class SRSolver2(BaseSolver):
         self.SR = None
 
         self.records = {'train_loss': [],
-                        'val_loss': [],
-                        'psnr': [],
-                        'ssim': [],
+                        'val_loss_BI': [],
+                        'psnr_BI': [],
+                        'ssim_BI': [],
+                        'val_loss_DN': [],
+                        'psnr_DN': [],
+                        'ssim_DN': [],
                         'lr': []}
 
         self.model = create_model(opt)
@@ -394,9 +397,12 @@ class SRSolver2(BaseSolver):
     def save_current_log(self):
         data_frame = pd.DataFrame(
             data={'train_loss': self.records['train_loss']
-                , 'val_loss': self.records['val_loss']
-                , 'psnr': self.records['psnr']
-                , 'ssim': self.records['ssim']
+                , 'val_loss_BI': self.records['val_loss_BI']
+                , 'psnr_BI': self.records['psnr_BI']
+                , 'ssim_BI': self.records['ssim_BI']
+                , 'val_loss_DN': self.records['val_loss_DN']
+                , 'psnr_DN': self.records['psnr_DN']
+                , 'ssim_DN': self.records['ssim_DN']
                 , 'lr': self.records['lr']
                   },
             index=range(1, self.cur_epoch + 1)

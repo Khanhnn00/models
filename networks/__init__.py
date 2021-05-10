@@ -133,6 +133,11 @@ def define_net(opt):
         net = RDN(in_channels=opt['in_channels'], out_channels=opt['out_channels'],
                              num_features=opt['num_features'], num_blocks = opt['num_blocks'], num_layers = opt['num_layers'],
                              upscale_factor=opt['scale'])
+    elif which_model.find('AE') >= 0:
+        from .ae_arch import RDN
+        net = RDN(in_channels=opt['in_channels'], out_channels=opt['out_channels'],
+                             num_features=opt['num_features'], num_blocks = opt['num_blocks'], num_layers = opt['num_layers'],
+                             upscale_factor=opt['scale'])
 
     elif which_model == 'EDSR':
         # print('EDSR')

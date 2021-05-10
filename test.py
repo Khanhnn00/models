@@ -70,7 +70,7 @@ def main():
 
             # calculate PSNR/SSIM metrics on Python
             if need_HR:
-                psnr, ssim = util.calc_metrics(visuals['SR'], visuals['HR'], crop_border=scale,test_Y=False)
+                psnr, ssim = util.calc_metrics(visuals['SR'], visuals['HR'], crop_border=scale,test_Y=True)
                 total_psnr.append(psnr)
                 total_ssim.append(ssim)
                 path_list.append(os.path.basename(batch['HR_path'][0]).replace('HR', model_name))

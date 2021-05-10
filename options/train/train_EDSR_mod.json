@@ -17,7 +17,7 @@
             "dataroot_LR": "../dataset/result/LR_x4_npy",
             "data_type": "npy",
             "n_workers": 4,
-            "batch_size": 64,
+            "batch_size": 32,
             "LR_size": 48,
             "use_flip": true,
             "use_rot": true,
@@ -61,7 +61,7 @@
         "save_ckp_step": 50,
         "save_vis_step": 1,
         "pretrain": null,
-        "pretrained_path": "./experiments/EDSR_in3f256_x4/epochs/last_ckp.pth",
+        "pretrained_path": "./experiments/EDSR_MOD_in3f256_x4/epochs/last_ckp.pth",
         "cl_weights": [1.0, 1.0, 1.0, 1.0]
     }
 }
