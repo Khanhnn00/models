@@ -18,7 +18,7 @@
             "dataroot_LR": "./dataset/result/HR_x4_lr_BD_npy",
             "data_type": "npy",
             "n_workers": 0,
-            "batch_size": 16,
+            "batch_size": 4,
             "LR_size": 40,
             "use_flip": true,
             "use_rot": true,

@@ -11,7 +11,7 @@ from data import create_dataloader
 from data import create_dataset
 import torch.autograd.profiler as profiler
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "6,7"
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
 def main():
     parser = argparse.ArgumentParser(description='Train Super Resolution Models')

@@ -23,6 +23,7 @@ class BaseSolver(object):
         # experimental dirs
         self.exp_root = opt['path']['exp_root']
         self.checkpoint_dir = opt['path']['epochs']
+        print('self.checkpoint_dir: {}'.format(self.checkpoint_dir))
         self.records_dir = opt['path']['records']
         self.visual_dir = opt['path']['visual']
 

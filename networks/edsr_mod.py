@@ -6,6 +6,8 @@ import math
 import torch
 import torch.nn as nn
 import numpy as np
+import kornia
+from kornia import motion_blur
 
 
 def default_conv(in_channels, out_channels, kernel_size, bias=True):
@@ -90,9 +92,9 @@ class Upsampler(nn.Sequential):
 
         super(Upsampler, self).__init__(*m)
 
-class EDSR_MOD(nn.Module):
+class EDSR_PLUS(nn.Module):
     def __init__(self, in_channels, out_channels, num_features, num_blocks, res_scale, upscale_factor, conv=default_conv):
-        super(EDSR_MOD, self).__init__()
+        super(EDSR_PLUS, self).__init__()
 
         n_resblocks = num_blocks
         n_feats = num_features
@@ -131,9 +133,6 @@ class EDSR_MOD(nn.Module):
         # print(x.shape)
         # img = img.squeeze(0).permute(1,2,0).detach().cpu().numpy()
         if is_test == False:
-            '''
-            BI + DN
-            '''
             noises = np.random.normal(scale=30, size=x.shape)
             noises = noises.round()
             ft = torch.from_numpy(noises.copy()).short().cuda()
@@ -141,16 +140,19 @@ class EDSR_MOD(nn.Module):
             x_noise = x.short() + ft.short()
             x_noise = torch.clamp(x_noise, min=0, max=255).type(torch.uint8)
 
-            x = self.sub_mean(x)
-            feat_x = self.head(x)
+            x_blur = motion_blur(x, 17, 90., 0.)
+
+            x_blur = self.sub_mean(x_blur)
+            feat_blur = self.head(x_blur)
 
             x_noise = self.sub_mean(x_noise.float())
             feat_noise = self.head(x_noise)
 
-            #weighting
-            p = self.weighting(feat_noise)
+            # #weighting
+            # p = self.weighting(feat_noise)
 
-            x = (feat_x*(1-p)) + (feat_noise*(p))
+            # x = (feat_x*(1-p)) + (feat_noise*(p))
+            x = feat_blur + feat_noise
 
             res = self.body(x)
             res += x
@@ -163,7 +165,7 @@ class EDSR_MOD(nn.Module):
             x = self.sub_mean(x)
             x = self.head(x)
 
-            # x = x.mul_(2)
+            x = x.mul_(2)
 
             res = self.body(x)
             res += x
@@ -192,4 +194,3 @@ class EDSR_MOD(nn.Module):
                 if name.find('tail') == -1:
                     raise KeyError('unexpected key "{}" in state_dict'
                                    .format(name))
-

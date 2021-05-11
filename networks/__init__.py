@@ -143,15 +143,21 @@ def define_net(opt):
                              num_features=opt['num_features'], num_blocks = opt['num_blocks'], res_scale=opt['res_scale'],
                              upscale_factor=opt['scale'])
 
-    elif which_model == 'EDSR_MOD':
-        from .edsr_mod import EDSR_MOD
-        net = EDSR_MOD(in_channels=opt['in_channels'], out_channels=opt['out_channels'],
+    elif which_model == 'EDSR_PLUS':
+        from .edsr_mod import EDSR_PLUS
+        net = EDSR_PLUS(in_channels=opt['in_channels'], out_channels=opt['out_channels'],
                              num_features=opt['num_features'], num_blocks = opt['num_blocks'], res_scale=opt['res_scale'],
                              upscale_factor=opt['scale'])
 
     elif which_model == 'EDSR_DN':
         from .edsr_DN import EDSR_DN
         net = EDSR_DN(in_channels=opt['in_channels'], out_channels=opt['out_channels'],
+                             num_features=opt['num_features'], num_blocks = opt['num_blocks'], res_scale=opt['res_scale'],
+                             upscale_factor=opt['scale'])
+
+    elif which_model == 'EDSR_VER2_BDDN':
+        from .edsr_ver2 import EDSR_VER2_BDDN
+        net = EDSR_VER2_BDDN(in_channels=opt['in_channels'], out_channels=opt['out_channels'],
                              num_features=opt['num_features'], num_blocks = opt['num_blocks'], res_scale=opt['res_scale'],
                              upscale_factor=opt['scale'])
 

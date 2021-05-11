@@ -16,7 +16,7 @@
             "dataroot_HR": "../dataset/result/HR_x4_npy",
             "dataroot_LR": "../dataset/result/LR_x4_npy",
             "data_type": "npy",
-            "n_workers": 4,
+            "n_workers": 0,
             "batch_size": 32,
             "LR_size": 48,
             "use_flip": true,
@@ -26,19 +26,25 @@
         "val": {
             "mode": "LRHR",
             "dataroot_HR": "../SRbenchmark/HR_x4",
-            "dataroot_LR": "../SRbenchmark/LR_DN",
+            "dataroot_LR": "../SRbenchmark/LR_motion_noise",
             "data_type": "img"
         },
         "val2": {
             "mode": "LRHR",
             "dataroot_HR": "../SRbenchmark/HR_x4",
-            "dataroot_LR": "../SRbenchmark/LR_x4",
+            "dataroot_LR": "../SRbenchmark/LR_motion",
+            "data_type": "img"
+        },
+        "val3": {
+            "mode": "LRHR",
+            "dataroot_HR": "../SRbenchmark/HR_x4",
+            "dataroot_LR": "../SRbenchmark/LR_DN",
             "data_type": "img"
         }
     },
 
     "networks": {
-        "which_model": "EDSR_MOD",
+        "which_model": "EDSR_plus",
         "num_features": 256,
         "in_channels": 3,
         "out_channels": 3,
@@ -60,8 +66,8 @@
         "split_batch": 2,
         "save_ckp_step": 50,
         "save_vis_step": 1,
-        "pretrain": null,
-        "pretrained_path": "./experiments/EDSR_MOD_in3f256_x4/epochs/last_ckp.pth",
+        "pretrain": "resume",
+        "pretrained_path": "./experiments/EDSR_PLUS_in3f256_x4/epochs/last_ckp.pth",
         "cl_weights": [1.0, 1.0, 1.0, 1.0]
     }
 }
