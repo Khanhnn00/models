@@ -9,7 +9,7 @@ class LRHRDataset(data.Dataset):
     '''
 
     def name(self):
-        return common.find_benchmark(self.opt['dataroot_LR'])
+        return (self.opt['dataroot_LR'].split('/')[-1])
 
 
     def __init__(self, opt):

@@ -1,161 +1,113 @@
-import argparse, random
-from tqdm import tqdm
-
-import torch
+import argparse, time, os
+import imageio
 
 import options.options as option
 from utils import util
-import os
-from solvers import create_solver
+from solvers import create_solver, create_solver_split
 from data import create_dataloader
 from data import create_dataset
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "4,5"
+os.environ["CUDA_VISIBLE_DEVICES"] = "6"
 
 def main():
-    parser = argparse.ArgumentParser(description='Train Super Resolution Models')
-    #	parser.add_argument('-opt', type=str, required=True, help='Path to options JSON file.')
-    #	opt = option.parse(parser.parse_args().opt)
-    # opt = option.parse('options/train/train_EDSR.json')
-    opt = option.parse('options/train/train_DBPN_mod.json')
+    parser = argparse.ArgumentParser(description='Test Super Resolution Models')
+    # parser.add_argument('-opt', type=str, required=True, help='Path to options JSON file.')
+    # opt = option.parse(parser.parse_args().opt)
+    # opt = option.parse('./options/test/test_RANDOM.json')
+    opt = option.parse('./options/test/test_EDSR_mod.json')
+    # opt = option.parse('./options/test/test_EDSR_ver2.json')
+    # opt = option.parse('./options/test/test_DPBN_mod.json')
+    # opt = option.parse('./options/test/test_DPBN.json')
+    opt = option.dict_to_nonedict(opt)
 
-    # random seed
-    seed = opt['solver']['manual_seed']
-    if seed is None: seed = random.randint(1, 10000)
-    print("===> Random Seed: [%d]"%seed)
-    random.seed(seed)
-    torch.manual_seed(seed)
-
-    # create train and val dataloader
-    for phase, dataset_opt in sorted(opt['datasets'].items()):
-        if phase == 'train':
-            train_set = create_dataset(dataset_opt)
-            train_loader = create_dataloader(train_set, dataset_opt)
-            print('===> Train Dataset: %s   Number of images: [%d]' % (train_set.name(), len(train_set)))
-            if train_loader is None: raise ValueError("[Error] The training data does not exist")
-
-        elif phase == 'val':
-            val_set = create_dataset(dataset_opt)
-            val_loader = create_dataloader(val_set, dataset_opt)
-            print('===> Val Dataset: %s   Number of images: [%d]' % (val_set.name(), len(val_set)))
-        
-        elif phase == 'val2':
-            val_set2 = create_dataset(dataset_opt)
-            val_loader2 = create_dataloader(val_set2, dataset_opt)
-            print('===> Val Dataset: %s   Number of images: [%d]' % (val_set2.name(), len(val_set2)))
-
-        else:
-            raise NotImplementedError("[Error] Dataset phase [%s] in *.json is not recognized." % phase)
-
-    solver = create_solver(opt)
-
+    # initial configure
     scale = opt['scale']
-    model_name = opt['networks']['which_model'].upper()
+    degrad = opt['degradation']
+    network_opt = opt['networks']
+    model_name = network_opt['which_model'].upper()
+    if opt['self_ensemble']: model_name += 'plus'
 
-    print('===> Start Train')
+    # create test dataloader
+    bm_names =[]
+    test_loaders = []
+    for _, dataset_opt in sorted(opt['datasets'].items()):
+        test_set = create_dataset(dataset_opt)
+        test_loader = create_dataloader(test_set, dataset_opt)
+        test_loaders.append(test_loader)
+        print('===> Test Dataset: [%s]   Number of images: [%d]' % (test_set.name(), len(test_set)))
+        bm_names.append(test_set.name())
+
+    # create solver (and load model)
+    # solver = create_solver(opt)
+    solver = create_solver_split(opt)
+    # Test phase
+    print('===> Start Test')
     print("==================================================")
+    print("Method: %s || Scale: %d || Degradation: %s"%(model_name, scale, degrad))
 
-    solver_log = solver.get_current_log()
+    for bm, test_loader in zip(bm_names, test_loaders):
+        print("Test set : [%s]"%bm)
 
-    NUM_EPOCH = int(opt['solver']['num_epochs'])
-    start_epoch = solver_log['epoch']
+        sr_list = []
+        path_list = []
 
-    print("Method: %s || Scale: %d || Epoch Range: (%d ~ %d)"%(model_name, scale, start_epoch, NUM_EPOCH))
+        total_psnr = []
+        total_ssim = []
+        total_time = []
 
-    for epoch in range(start_epoch, NUM_EPOCH + 1):
-        print('\n===> Training Epoch: [%d/%d]...  Learning Rate: %f'%(epoch,
-                                                                      NUM_EPOCH,
-                                                                      solver.get_current_learning_rate()))
+        need_HR = False if test_loader.dataset.__class__.__name__.find('LRHR') < 0 else True
 
-        # Initialization
-        solver_log['epoch'] = epoch
+        for iter, batch in enumerate(test_loader):
+            solver.feed_data(batch, need_HR=need_HR)
 
-        # Train model
-        train_loss_list = []
-        with tqdm(total=len(train_loader), desc='Epoch: [%d/%d]'%(epoch, NUM_EPOCH), miniters=1) as t:
-            for iter, batch in enumerate(train_loader):
-                solver.feed_data(batch)
-                iter_loss = solver.train_step()
-                batch_size = batch['LR'].size(0)
-                train_loss_list.append(iter_loss*batch_size)
-                t.set_postfix_str("Batch Loss: %.4f" % iter_loss)
-                t.update()
+            # calculate forward time
+            t0 = time.time()
+            solver.test()
+            t1 = time.time()
+            total_time.append((t1 - t0))
 
-        solver_log['records']['train_loss'].append(sum(train_loss_list)/len(train_set))
-        solver_log['records']['lr'].append(solver.get_current_learning_rate())
+            visuals = solver.get_current_visual(need_HR=need_HR)
+            sr_list.append(visuals['SR'])
 
-        print('\nEpoch: [%d/%d]   Avg Train Loss: %.6f' % (epoch,
-                                                    NUM_EPOCH,
-                                                    sum(train_loss_list)/len(train_set)))
+            # calculate PSNR/SSIM metrics on Python
+            if need_HR:
+                psnr, ssim = util.calc_metrics(visuals['SR'], visuals['HR'], crop_border=scale,test_Y=True)
+                total_psnr.append(psnr)
+                total_ssim.append(ssim)
+                path_list.append(os.path.basename(batch['HR_path'][0]).replace('HR', model_name))
+                print("[%d/%d] %s || PSNR(dB)/SSIM: %.2f/%.4f || Timer: %.4f sec ." % (iter+1, len(test_loader),
+                                                                                       os.path.basename(batch['LR_path'][0]),
+                                                                                       psnr, ssim,
+                                                                                       (t1 - t0)))
+            else:
+                path_list.append(os.path.basename(batch['LR_path'][0]))
+                print("[%d/%d] %s || Timer: %.4f sec ." % (iter + 1, len(test_loader),
+                                                           os.path.basename(batch['LR_path'][0]),
+                                                           (t1 - t0)))
 
-        print('===> Validating...',)
+        if need_HR:
+            print("---- Average PSNR(dB) /SSIM /Speed(s) for [%s] ----" % bm)
+            print("PSNR: %.2f      SSIM: %.4f      Speed: %.4f" % (sum(total_psnr)/len(total_psnr),
+                                                                  sum(total_ssim)/len(total_ssim),
+                                                                  sum(total_time)/len(total_time)))
+        else:
+            print("---- Average Speed(s) for [%s] is %.4f sec ----" % (bm,
+                                                                      sum(total_time)/len(total_time)))
 
-        psnr_list = []
-        ssim_list = []
-        val_loss_list = []
+        # save SR results for further evaluation on MATLAB
+        # if need_HR:
+        #     save_img_path = os.path.join('./results/SR/'+degrad, model_name, bm, "x%d"%scale)
+        # else:
+        #     save_img_path = os.path.join('./results/SR/'+bm, model_name, "x%d"%scale)
 
-        for iter, batch in enumerate(val_loader):
-            solver.feed_data(batch)
-            iter_loss = solver.test()
-            val_loss_list.append(iter_loss)
+        # print("===> Saving SR images of [%s]... Save Path: [%s]\n" % (bm, save_img_path))
 
-            # calculate evaluation metrics
-            visuals = solver.get_current_visual()
-            psnr, ssim = util.calc_metrics(visuals['SR'], visuals['HR'], crop_border=scale, test_Y=False)
-            psnr_list.append(psnr)
-            ssim_list.append(ssim)
+        # if not os.path.exists(save_img_path): os.makedirs(save_img_path)
+        # for img, name in zip(sr_list, path_list):
+        #     imageio.imwrite(os.path.join(save_img_path, name), img)
 
-            if opt["save_image"]:
-                solver.save_current_visual(epoch, iter)
-
-        solver_log['records']['val_loss'].append(sum(val_loss_list)/len(val_loss_list))
-        solver_log['records']['psnr'].append(sum(psnr_list)/len(psnr_list))
-        solver_log['records']['ssim'].append(sum(ssim_list)/len(ssim_list))
-
-        # record the best epoch
-        epoch_is_best = False
-        if solver_log['best_pred'] < (sum(psnr_list)/len(psnr_list)):
-            solver_log['best_pred'] = (sum(psnr_list)/len(psnr_list))
-            epoch_is_best = True
-            solver_log['best_epoch'] = epoch
-
-        print("[%s] PSNR: %.2f   SSIM: %.4f   Loss: %.6f   Best PSNR: %.2f in Epoch: [%d]" % (val_set.name(),
-                                                                                              sum(psnr_list)/len(psnr_list),
-                                                                                              sum(ssim_list)/len(ssim_list),
-                                                                                              sum(val_loss_list)/len(val_loss_list),
-                                                                                              solver_log['best_pred'],
-                                                                                              solver_log['best_epoch']))
-
-        psnr_list2 = []
-        ssim_list2 = []
-        val_loss_list2 = []
-
-        for iter, batch in enumerate(val_loader2):
-            solver.feed_data(batch)
-            iter_loss = solver.test()
-            val_loss_list2.append(iter_loss)
-
-            # calculate evaluation metrics
-            visuals = solver.get_current_visual()
-            psnr, ssim = util.calc_metrics(visuals['SR'], visuals['HR'], crop_border=scale, test_Y=False)
-            psnr_list2.append(psnr)
-            ssim_list2.append(ssim)
-
-        print("[%s] PSNR: %.2f   SSIM: %.4f   Loss: %.6f" % (val_set2.name(),
-                                                                                              sum(psnr_list2)/len(psnr_list2),
-                                                                                              sum(ssim_list2)/len(ssim_list2),
-                                                                                              sum(val_loss_list2)/len(val_loss_list2)
-                                                                                            ))
-        
-        solver.set_current_log(solver_log)
-        solver.save_checkpoint(epoch, epoch_is_best)
-        solver.save_current_log()
-
-        # update lr
-        solver.update_learning_rate(epoch)
-
-    print('===> Finished !')
-
+    print("==================================================")
+    print("===> Finished !")
 
 if __name__ == '__main__':
     main()

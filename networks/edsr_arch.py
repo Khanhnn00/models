@@ -2,9 +2,62 @@
 # https://arxiv.org/abs/1707.02921
 
 import math
-
+import numbers
 import torch
 import torch.nn as nn
+import numpy as np
+import kornia
+from kornia import motion_blur
+from torch.nn import functional as F
+
+class GaussianSmoothing(nn.Module):
+    def __init__(self, channels, kernel_size, sigma, dim=2):
+        super(GaussianSmoothing, self).__init__()
+        if isinstance(kernel_size, numbers.Number):
+            kernel_size = [kernel_size] * dim
+        if isinstance(sigma, numbers.Number):
+            sigma = [sigma] * dim
+
+        # The gaussian kernel is the product of the
+        # gaussian function of each dimension.
+        kernel = 1
+        meshgrids = torch.meshgrid(
+            [
+                torch.arange(size, dtype=torch.float32)
+                for size in kernel_size
+            ]
+        )
+        for size, std, mgrid in zip(kernel_size, sigma, meshgrids):
+            mean = (size - 1) / 2
+            kernel *= 1 / (std * math.sqrt(2 * math.pi)) * \
+                      torch.exp(-((mgrid - mean) / std) ** 2 / 2)
+
+        # Make sure sum of values in gaussian kernel equals 1.
+        kernel = kernel / torch.sum(kernel)
+        print(kernel.shape)
+
+        # Reshape to depthwise convolutional weight
+        kernel = kernel.view(1, 1, *kernel.size())
+        kernel = kernel.repeat(channels, *[1] * (kernel.dim() - 1))
+        print(kernel.shape)
+
+        self.register_buffer('weight', kernel)
+        self.groups = channels
+
+        if dim == 1:
+            self.conv = F.conv1d
+        elif dim == 2:
+            self.conv = F.conv2d
+        elif dim == 3:
+            self.conv = F.conv3d
+        else:
+            raise RuntimeError(
+                'Only 1, 2 and 3 dimensions are supported. Received {}.'.format(dim)
+            )
+
+    def forward(self, input):
+        return self.conv(input, weight=self.weight, groups=self.groups)
+
 
 def default_conv(in_channels, out_channels, kernel_size, bias=True):
     return nn.Conv2d(
@@ -99,6 +152,7 @@ class EDSR(nn.Module):
         act = nn.ReLU(True)
         self.sub_mean = MeanShift()
         self.add_mean = MeanShift(sign=1)
+        self.kernel = GaussianSmoothing(3, 7, 1.6)   #channel, kernel_size and sigma value
 
         # define head module
         m_head = [conv(in_channels, n_feats, kernel_size)]
@@ -121,18 +175,38 @@ class EDSR(nn.Module):
         self.body = nn.Sequential(*m_body)
         self.tail = nn.Sequential(*m_tail)
 
-    def forward(self, x):
+    def forward(self, x, is_test):
         # print(x.shape)
-        x = self.sub_mean(x)
-        x = self.head(x)
+        if is_test == False:
+            # bi = x
+            noises = np.random.normal(scale=30, size=x.shape)
+            noises = noises.round()
+            ft = torch.from_numpy(noises.copy()).short().cuda()
+            x_noise = x.short() + ft.short()
+            x_noise = torch.clamp(x_noise, min=0, max=255).type(torch.uint8)
 
-        res = self.body(x)
-        res += x
+            x = self.sub_mean(x_noise.float())
+            x = self.head(x)
 
-        x = self.tail(res)
-        x = self.add_mean(x)
+            res = self.body(x)
+            res += x
 
-        return x 
+            x = self.tail(res)
+            x = self.add_mean(x)
+
+            return x
+        else:
+            x = self.sub_mean(x)
+            x = self.head(x)
+
+            res = self.body(x)
+            res += x
+
+            x = self.tail(res)
+            x = self.add_mean(x)
+
+            return x 
+
 
     def load_state_dict(self, state_dict, strict=True):
         own_state = self.state_dict()

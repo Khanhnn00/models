@@ -10,7 +10,7 @@ from solvers import create_solver, create_solver_split
 from data import create_dataloader
 from data import create_dataset
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "7"
+os.environ["CUDA_VISIBLE_DEVICES"] = "6"
 
 def main():
     parser = argparse.ArgumentParser(description='Train Super Resolution Models')
@@ -18,6 +18,7 @@ def main():
     #	opt = option.parse(parser.parse_args().opt)
     # opt = option.parse('options/train/train_EDSR_mod.json')
     opt = option.parse('options/train/train_EDSR_ver2.json')
+    # opt = option.parse('options/train/train_EDSR.json')
     # opt = option.parse('options/train/train_DPBN_mod.json')
 
     # random seed
@@ -178,7 +179,9 @@ def main():
         solver_log['records']['psnr_N'].append(sum(psnr_list_N)/len(psnr_list_N))
         solver_log['records']['ssim_N'].append(sum(ssim_list_N)/len(ssim_list_N))
         
-        print("[%s] PSNR: %.2f   SSIM: %.4f   Loss: %.6f " % (val_set3.name(),   sum(val_loss_list_N)/len(val_loss_list_N)
+        print("[%s] PSNR: %.2f   SSIM: %.4f   Loss: %.6f " % (val_set3.name(),   
+        sum(psnr_list_N)/len(psnr_list_N),
+                                                                                              sum(ssim_list_N)/len(ssim_list_N),sum(val_loss_list_N)/len(val_loss_list_N)
                                                                                               ))
 
         solver.set_current_log(solver_log)

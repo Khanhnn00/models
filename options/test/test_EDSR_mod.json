@@ -13,11 +13,17 @@
     "datasets": {
             "test_set1": {
                 "mode": "LRHR",
-                "dataroot_HR": "../SRbenchmark/HR_x4",
-                "dataroot_LR": "../SRbenchmark/LR_x4",
+                "dataroot_HR":  "../SRbenchmark/HR_x4",
+                "dataroot_LR": "../SRbenchmark/LR_BDDN",
                 "data_type": "img"
             },
             "test_set2": {
+                "mode": "LRHR",
+                "dataroot_HR": "../SRbenchmark/HR_x4",
+                "dataroot_LR": "../SRbenchmark/LR_BD",
+                "data_type": "img"
+            },
+            "test_set3": {
                 "mode": "LRHR",
                 "dataroot_HR": "../SRbenchmark/HR_x4",
                 "dataroot_LR": "../SRbenchmark/LR_DN",
@@ -26,7 +32,7 @@
         },
 
     "networks": {
-        "which_model": "EDSR_MOD",
+        "which_model": "EDSR_VER2_BDDN",
         "num_features": 256,
         "in_channels": 3,
         "out_channels": 3,
@@ -35,6 +41,6 @@
     },
 
     "solver": {
-        "pretrained_path": "./experiments/EDSR_MOD_in3f256_x4/epochs/best_ckp.pth"
+        "pretrained_path": "./experiments/EDSR_VER2_BDDN_in3f256_x4_archived_210512-142205/epochs/best_ckp.pth"
     }
 }

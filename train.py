@@ -6,19 +6,19 @@ import torch
 import options.options as option
 from utils import util
 import os
-from solvers import create_solver
+from solvers import create_solver, create_solver_split
 from data import create_dataloader
 from data import create_dataset
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "7"
+os.environ["CUDA_VISIBLE_DEVICES"] = "6"
 
 def main():
     parser = argparse.ArgumentParser(description='Train Super Resolution Models')
     #	parser.add_argument('-opt', type=str, required=True, help='Path to options JSON file.')
     #	opt = option.parse(parser.parse_args().opt)
-    # opt = option.parse('options/train/train_EDSR.json')
+    opt = option.parse('options/train/train_EDSR.json')
     # opt = option.parse('options/train/train_DBPN.json')
-    opt = option.parse('options/train/train_RDN.json')
+    # opt = option.parse('options/train/train_RDN.json')
 
     # random seed
     seed = opt['solver']['manual_seed']
@@ -44,11 +44,16 @@ def main():
             val_set2 = create_dataset(dataset_opt)
             val_loader2 = create_dataloader(val_set2, dataset_opt)
             print('===> Val Dataset: %s   Number of images: [%d]' % (val_set2.name(), len(val_set2)))
+        
+        elif phase == 'val3':
+            val_set3 = create_dataset(dataset_opt)
+            val_loader3 = create_dataloader(val_set3, dataset_opt)
+            print('===> Val Dataset: %s   Number of images: [%d]' % (val_set3.name(), len(val_set3)))
 
         else:
             raise NotImplementedError("[Error] Dataset phase [%s] in *.json is not recognized." % phase)
 
-    solver = create_solver(opt)
+    solver = create_solver_split(opt)
     # solver = create_solver_split(opt) #for mod
     
     scale = opt['scale']
@@ -93,66 +98,91 @@ def main():
 
         print('===> Validating...',)
 
-        psnr_list_BI = []
-        ssim_list_BI = []
-        val_loss_list_BI = []
+        psnr_list_MN = []
+        ssim_list_MN = []
+        val_loss_list_MN = []
 
-        psnr_list_DN = []
-        ssim_list_DN = []
-        val_loss_list_DN = []
+        psnr_list_M = []
+        ssim_list_M = []
+        val_loss_list_M = []
 
         for iter, batch in enumerate(val_loader):
             solver.feed_data(batch)
             iter_loss = solver.test()
-            val_loss_list_BI.append(iter_loss)
+            val_loss_list_MN.append(iter_loss)
 
             # calculate evaluation metrics
             visuals = solver.get_current_visual()
             psnr, ssim = util.calc_metrics(visuals['SR'], visuals['HR'], crop_border=scale, test_Y=False)
-            psnr_list_BI.append(psnr)
-            ssim_list_BI.append(ssim)
+            psnr_list_MN.append(psnr)
+            ssim_list_MN.append(ssim)
 
             if opt["save_image"]:
                 solver.save_current_visual(epoch, iter)
 
-        solver_log['records']['val_loss_BI'].append(sum(val_loss_list_BI)/len(val_loss_list_BI))
-        solver_log['records']['psnr_BI'].append(sum(psnr_list_BI)/len(psnr_list_BI))
-        solver_log['records']['ssim_BI'].append(sum(ssim_list_BI)/len(ssim_list_BI))
+        solver_log['records']['val_loss_MN'].append(sum(val_loss_list_MN)/len(val_loss_list_MN))
+        solver_log['records']['psnr_MN'].append(sum(psnr_list_MN)/len(psnr_list_MN))
+        solver_log['records']['ssim_MN'].append(sum(psnr_list_MN)/len(psnr_list_MN))
 
         # record the best epoch
         epoch_is_best = False
-        if solver_log['best_pred'] < (sum(psnr_list_BI)/len(psnr_list_BI)):
-            solver_log['best_pred'] = (sum(psnr_list_BI)/len(psnr_list_BI))
+        if solver_log['best_pred'] < (sum(psnr_list_MN)/len(psnr_list_MN)):
+            solver_log['best_pred'] = (sum(psnr_list_MN)/len(psnr_list_MN))
             epoch_is_best = True
             solver_log['best_epoch'] = epoch
 
         print("[%s] PSNR: %.2f   SSIM: %.4f   Loss: %.6f   Best PSNR: %.2f in Epoch: [%d]" % (val_set.name(),
-                                                                                              sum(psnr_list_BI)/len(psnr_list_BI),
-                                                                                              sum(ssim_list_BI)/len(ssim_list_BI),
-                                                                                              sum(val_loss_list_BI)/len(val_loss_list_BI),
+                                                                                              sum(psnr_list_MN)/len(psnr_list_MN),
+                                                                                              sum(ssim_list_MN)/len(ssim_list_MN),
+                                                                                              sum(val_loss_list_MN)/len(val_loss_list_MN),
                                                                                               solver_log['best_pred'],
                                                                                               solver_log['best_epoch']))
 
         for iter, batch in enumerate(val_loader2):
             solver.feed_data(batch)
             iter_loss = solver.test()
-            val_loss_list_DN.append(iter_loss)
+            val_loss_list_M.append(iter_loss)
 
             # calculate evaluation metrics
             visuals = solver.get_current_visual()
             psnr, ssim = util.calc_metrics(visuals['SR'], visuals['HR'], crop_border=scale, test_Y=False)
-            psnr_list_DN.append(psnr)
-            ssim_list_DN.append(ssim)
+            psnr_list_M.append(psnr)
+            ssim_list_M.append(ssim)
         
-        solver_log['records']['val_loss_DN'].append(sum(val_loss_list_DN)/len(val_loss_list_DN))
-        solver_log['records']['psnr_DN'].append(sum(psnr_list_DN)/len(psnr_list_DN))
-        solver_log['records']['ssim_DN'].append(sum(ssim_list_DN)/len(ssim_list_DN))
-        
+        solver_log['records']['val_loss_M'].append(sum(val_loss_list_M)/len(val_loss_list_M))
+        solver_log['records']['psnr_M'].append(sum(psnr_list_M)/len(psnr_list_M))
+        solver_log['records']['ssim_M'].append(sum(ssim_list_M)/len(ssim_list_M))
+    
         print("[%s] PSNR: %.2f   SSIM: %.4f   Loss: %.6f " % (val_set2.name(),
-                                                                                              sum(psnr_list_DN)/len(psnr_list_DN),
-                                                                                              sum(ssim_list_DN)/len(ssim_list_DN),
-                                                                                              sum(val_loss_list_DN)/len(val_loss_list_DN)
+                                                                                              sum(psnr_list_M)/len(psnr_list_M),
+                                                                                              sum(ssim_list_M)/len(ssim_list_M),
+                                                                                              sum(val_loss_list_M)/len(val_loss_list_M)
                                                                                               ))
+
+        psnr_list_N = []
+        ssim_list_N = []
+        val_loss_list_N = []                                                                                        
+
+        for iter, batch in enumerate(val_loader3):
+            solver.feed_data(batch)
+            iter_loss = solver.test()
+            val_loss_list_N.append(iter_loss)
+
+            # calculate evaluation metrics
+            visuals = solver.get_current_visual()
+            psnr, ssim = util.calc_metrics(visuals['SR'], visuals['HR'], crop_border=scale, test_Y=False)
+            psnr_list_N.append(psnr)
+            ssim_list_N.append(ssim)
+        
+        solver_log['records']['val_loss_N'].append(sum(val_loss_list_N)/len(val_loss_list_N))
+        solver_log['records']['psnr_N'].append(sum(psnr_list_N)/len(psnr_list_N))
+        solver_log['records']['ssim_N'].append(sum(ssim_list_N)/len(ssim_list_N))
+        
+        print("[%s] PSNR: %.2f   SSIM: %.4f   Loss: %.6f " % (val_set3.name(),   
+        sum(psnr_list_N)/len(psnr_list_N),
+                                                                                              sum(ssim_list_N)/len(ssim_list_N),sum(val_loss_list_N)/len(val_loss_list_N)
+                                                                                              )) 
+                                                                                                                                                                       
 
         solver.set_current_log(solver_log)
         solver.save_checkpoint(epoch, epoch_is_best)

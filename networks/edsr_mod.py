@@ -2,12 +2,61 @@
 # https://arxiv.org/abs/1707.02921
 
 import math
-
+import numbers
 import torch
 import torch.nn as nn
 import numpy as np
 import kornia
 from kornia import motion_blur
+from torch.nn import functional as F
+
+class GaussianSmoothing(nn.Module):
+    def __init__(self, channels, kernel_size, sigma, dim=2):
+        super(GaussianSmoothing, self).__init__()
+        if isinstance(kernel_size, numbers.Number):
+            kernel_size = [kernel_size] * dim
+        if isinstance(sigma, numbers.Number):
+            sigma = [sigma] * dim
+
+        # The gaussian kernel is the product of the
+        # gaussian function of each dimension.
+        kernel = 1
+        meshgrids = torch.meshgrid(
+            [
+                torch.arange(size, dtype=torch.float32)
+                for size in kernel_size
+            ]
+        )
+        for size, std, mgrid in zip(kernel_size, sigma, meshgrids):
+            mean = (size - 1) / 2
+            kernel *= 1 / (std * math.sqrt(2 * math.pi)) * \
+                      torch.exp(-((mgrid - mean) / std) ** 2 / 2)
+
+        # Make sure sum of values in gaussian kernel equals 1.
+        kernel = kernel / torch.sum(kernel)
+        print(kernel.shape)
+
+        # Reshape to depthwise convolutional weight
+        kernel = kernel.view(1, 1, *kernel.size())
+        kernel = kernel.repeat(channels, *[1] * (kernel.dim() - 1))
+        print(kernel.shape)
+
+        self.register_buffer('weight', kernel)
+        self.groups = channels
+
+        if dim == 1:
+            self.conv = F.conv1d
+        elif dim == 2:
+            self.conv = F.conv2d
+        elif dim == 3:
+            self.conv = F.conv3d
+        else:
+            raise RuntimeError(
+                'Only 1, 2 and 3 dimensions are supported. Received {}.'.format(dim)
+            )
+
+    def forward(self, input):
+        return self.conv(input, weight=self.weight, groups=self.groups)
 
 
 def default_conv(in_channels, out_channels, kernel_size, bias=True):
@@ -165,7 +214,7 @@ class EDSR_PLUS(nn.Module):
             x = self.sub_mean(x)
             x = self.head(x)
 
-            x = x.mul_(2)
+            # x = x.mul_(2)
 
             res = self.body(x)
             res += x

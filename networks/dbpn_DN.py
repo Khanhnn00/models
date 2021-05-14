@@ -82,7 +82,6 @@ class D_DBPN_DN(nn.Module):
             noises = np.random.normal(scale=30, size=x.shape)
             noises = noises.round()
             ft = torch.from_numpy(noises.copy()).short().cuda()
-
             x_noise = x.short() + ft.short()
             x_noise = torch.clamp(x_noise, min=0, max=255).type(torch.uint8)
 

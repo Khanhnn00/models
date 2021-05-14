@@ -161,6 +161,12 @@ def define_net(opt):
                              num_features=opt['num_features'], num_blocks = opt['num_blocks'], res_scale=opt['res_scale'],
                              upscale_factor=opt['scale'])
 
+    elif which_model == 'EDSR_V3':
+        from .edsr_v3 import EDSR_V3
+        net = EDSR_VER2_BDDN(in_channels=opt['in_channels'], out_channels=opt['out_channels'],
+                             num_features=opt['num_features'], num_blocks = opt['num_blocks'], res_scale=opt['res_scale'],
+                             upscale_factor=opt['scale'])
+
     elif which_model == 'RANDOM':
         from .demo import RANDOM
         net = RANDOM(in_channels=opt['in_channels'], out_channels=opt['out_channels'],

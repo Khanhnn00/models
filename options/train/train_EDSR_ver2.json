@@ -57,17 +57,17 @@
         "learning_rate": 0.0001,
         "weight_decay": 0,
         "lr_scheme": "MultiStepLR",
-        "lr_steps": [150, 300, 450, 600],
+        "lr_steps": [50, 100, 150, 200],
         "lr_gamma": 0.5,
         "loss_type": "l1",
         "manual_seed": 0,
         "num_epochs": 500,
         "skip_threshold": 3,
         "split_batch": 2,
-        "save_ckp_step": 50,
+        "save_ckp_step": 500,
         "save_vis_step": 1,
         "pretrain": null,
-        "pretrained_path": "./experiments/EDSR_plus_ver2_LR/epochs/last_ckp.pth",
+        "pretrained_path": "./experiments/EDSR_VER2_BDDN_in3f256_x4/epochs/last_ckp.pth",
         "cl_weights": [1.0, 1.0, 1.0, 1.0]
     }
 }

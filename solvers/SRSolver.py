@@ -24,14 +24,17 @@ class SRSolver(BaseSolver):
         self.SR = None
 
         self.records = {'train_loss': [],
-                        'val_loss_BI': [],
-                        'psnr_BI': [],
-                        'ssim_BI': [],
-                        'val_loss_DN': [],
-                        'psnr_DN': [],
-                        'ssim_DN': [],
-                        'lr': []}
-
+                        'val_loss_MN': [],
+                        'psnr_MN': [],
+                        'ssim_MN': [],
+                        'val_loss_M': [],
+                        'psnr_M': [],
+                        'ssim_M': [],
+                        'val_loss_N': [],
+                        'psnr_N': [],
+                        'ssim_N': [],
+                        'lr': []
+        }
         self.model = create_model(opt)
 
         if self.is_train:
@@ -397,12 +400,15 @@ class SRSolver(BaseSolver):
     def save_current_log(self):
         data_frame = pd.DataFrame(
             data={'train_loss': self.records['train_loss']
-                , 'val_loss_BI': self.records['val_loss_BI']
-                , 'psnr_BI': self.records['psnr_BI']
-                , 'ssim_BI': self.records['ssim_BI']
-                , 'val_loss_DN': self.records['val_loss_DN']
-                , 'psnr_DN': self.records['psnr_DN']
-                , 'ssim_DN': self.records['ssim_DN']
+                , 'val_loss_MN': self.records['val_loss_MN']
+                , 'psnr_MN': self.records['psnr_MN']
+                , 'ssim_MN': self.records['ssim_MN']
+                , 'val_loss_M': self.records['val_loss_M']
+                , 'psnr_M': self.records['psnr_M']
+                , 'psnr_M': self.records['psnr_M']
+                , 'val_loss_N': self.records['val_loss_N']
+                , 'psnr_N': self.records['psnr_N']
+                , 'ssim_N': self.records['psnr_N']
                 , 'lr': self.records['lr']
                   },
             index=range(1, self.cur_epoch + 1)

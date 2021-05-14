@@ -26,19 +26,19 @@
         "val": {
             "mode": "LRHR",
             "dataroot_HR": "../SRbenchmark/HR_x4",
-            "dataroot_LR": "../SRbenchmark/LR_motion_noise",
+            "dataroot_LR": "../SRbenchmark/LR_BD",
             "data_type": "img"
         },
         "val2": {
             "mode": "LRHR",
             "dataroot_HR": "../SRbenchmark/HR_x4",
-            "dataroot_LR": "../SRbenchmark/LR_motion",
+            "dataroot_LR": "../SRbenchmark/LR_DN",
             "data_type": "img"
         },
         "val3": {
             "mode": "LRHR",
             "dataroot_HR": "../SRbenchmark/HR_x4",
-            "dataroot_LR": "../SRbenchmark/LR_DN",
+            "dataroot_LR": "../SRbenchmark/LR_BDDN",
             "data_type": "img"
         }
     },
@@ -64,7 +64,7 @@
         "num_epochs": 500,
         "skip_threshold": 3,
         "split_batch": 2,
-        "save_ckp_step": 50,
+        "save_ckp_step": 500,
         "save_vis_step": 1,
         "pretrain": "resume",
         "pretrained_path": "./experiments/EDSR_PLUS_in3f256_x4/epochs/last_ckp.pth",

@@ -34,7 +34,7 @@ class GaussianSmoothing(nn.Module):
 
         # Make sure sum of values in gaussian kernel equals 1.
         kernel = kernel / torch.sum(kernel)
-        print(kernel.shape)
+        # print(kernel.shape)
 
         # Reshape to depthwise convolutional weight
         kernel = kernel.view(1, 1, *kernel.size())
@@ -160,8 +160,11 @@ class EDSR_VER2_BDDN(nn.Module):
             nn.Sigmoid()
         )
         self.kernel = GaussianSmoothing(3, 7, 1.6)   #channel, kernel_size and sigma value
+        # self.conv1 = BasicBlock(conv, 512, 256, 1)
         # define head module
         m_head = [conv(in_channels, n_feats, kernel_size)]
+
+        self.bn = nn.BatchNorm2d(n_feats)
 
         # define body module
         m_body = [
@@ -202,11 +205,12 @@ class EDSR_VER2_BDDN(nn.Module):
             x_noise = self.sub_mean(x_noise.float())
             feat_noise = self.head(x_noise)
 
-            # #weighting
-            # p = self.weighting(feat_noise)
+            x = (feat_blur + feat_noise)/2
+            x = self.bn(x)
+            
 
-            # x = (feat_x*(1-p)) + (feat_noise*(p))
-            x = feat_blur + feat_noise
+            # x = torch.cat((feat_blur, feat_noise), dim=1)
+            # x = self.conv1(x)
 
             res = self.body(x)
             res += x
@@ -219,8 +223,11 @@ class EDSR_VER2_BDDN(nn.Module):
             x = self.sub_mean(x)
             x = self.head(x)
 
-            x = x.mul_(2)
+            # x = x.mul_(2)
+            # x = torch.cat((x,x), dim=1)
+            # x = self.conv1(x)
 
+            x = self.bn(x)
             res = self.body(x)
             res += x
 

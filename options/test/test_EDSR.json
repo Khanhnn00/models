@@ -20,6 +20,12 @@
             "test_set2": {
                 "mode": "LRHR",
                 "dataroot_HR": "../SRbenchmark/HR_x4",
+                "dataroot_LR": "../SRbenchmark/LR_BD",
+                "data_type": "img"
+            },
+            "test_set3": {
+                "mode": "LRHR",
+                "dataroot_HR": "../SRbenchmark/HR_x4",
                 "dataroot_LR": "../SRbenchmark/LR_DN",
                 "data_type": "img"
             }
@@ -35,6 +41,6 @@
     },
 
     "solver": {
-        "pretrained_path": "./experiments/EDSR_in3f256_x4/epochs/best_ckp.pth"
+        "pretrained_path": "./experiments/EDSR_DN_MYWAY/epochs/best_ckp.pth"
     }
 }
