@@ -44,7 +44,7 @@
     },
 
     "networks": {
-        "which_model": "EDSR",
+        "which_model": "EDSR_V3",
         "num_features": 256,
         "in_channels": 3,
         "out_channels": 3,
@@ -67,7 +67,7 @@
         "save_ckp_step": 50,
         "save_vis_step": 1,
         "pretrain": "resume",
-        "pretrained_path": "./experiments/EDSR_in3f256_x4/epochs/last_ckp.pth",
+        "pretrained_path": "./experiments/EDSR_V3_in3f256_x4/epochs/last_ckp.pth",
         "cl_weights": [1.0, 1.0, 1.0, 1.0]
     }
 }

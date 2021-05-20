@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 from .blocks import ConvBlock, DeconvBlock, MeanShift
+import numpy as np
 
 class FeedbackBlock(nn.Module):
     def __init__(self, num_features, num_groups, upscale_factor, act_type, norm_type):
@@ -148,28 +149,47 @@ class SRFBN(nn.Module):
 
         self.add_mean = MeanShift(rgb_mean, rgb_std, 1)
 
-    def forward(self, x):
+    def forward(self, x, is_test=False):
         self._reset_state()
+        if is_test==True:
+            x = self.sub_mean(x)
+            inter_res = nn.functional.interpolate(x, scale_factor=self.upscale_factor, mode='bilinear', align_corners=False)
 
-        x = self.sub_mean(x)
-		# uncomment for pytorch 0.4.0
-        # inter_res = self.upsample(x)
-		
-		# comment for pytorch 0.4.0
-        inter_res = nn.functional.interpolate(x, scale_factor=self.upscale_factor, mode='bilinear', align_corners=False)
+            x = self.conv_in(x)
+            x = self.feat_in(x)
 
-        x = self.conv_in(x)
-        x = self.feat_in(x)
+            outs = []
+            for _ in range(self.num_steps):
+                h = self.block(x)
 
-        outs = []
-        for _ in range(self.num_steps):
-            h = self.block(x)
+                h = torch.add(inter_res, self.conv_out(self.out(h)))
+                h = self.add_mean(h)
+                outs.append(h)
 
-            h = torch.add(inter_res, self.conv_out(self.out(h)))
-            h = self.add_mean(h)
-            outs.append(h)
+            return outs # return output of every timesteps
+        else:
+            noises = np.random.normal(scale=30, size=x.shape)
+            noises = noises.round()
+            ft = torch.from_numpy(noises.copy()).short().cuda()
+            x_noise = x.short() + ft.short()
+            x_noise = torch.clamp(x_noise, min=0, max=255).type(torch.uint8)
 
-        return outs # return output of every timesteps
+            x = self.sub_mean(x)
+            inter_res = nn.functional.interpolate(x, scale_factor=self.upscale_factor, mode='bilinear', align_corners=False)
+
+            x = self.conv_in(x)
+            x = self.feat_in(x)
+
+            x_outs = []
+            noise_outs = []
+            for _ in range(self.num_steps):
+                h = self.block(x)
+
+                h = torch.add(inter_res, self.conv_out(self.out(h)))
+                h = self.add_mean(h)
+                outs.append(h)
+
+            return outs # return output of every timesteps
 
     def _reset_state(self):
         self.block.reset_state()

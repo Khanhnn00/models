@@ -108,6 +108,13 @@ def define_net(opt):
         net = D_DBPN_MOD(in_channels=opt['in_channels'], out_channels=opt['out_channels'],
                         num_features=opt['num_features'], bp_stages=opt['num_blocks'],
                         upscale_factor=opt['scale'])
+    
+    elif which_model == 'D_DBPN_V3':
+        print('D_DBPN_V3')
+        from .dbpn_v3 import D_DBPN_V3
+        net = D_DBPN_V3(in_channels=opt['in_channels'], out_channels=opt['out_channels'],
+                        num_features=opt['num_features'], bp_stages=opt['num_blocks'],
+                        upscale_factor=opt['scale'])
 
     elif which_model == 'D-DBPN_DN':
         print('D-DPBN_DN')
@@ -115,6 +122,28 @@ def define_net(opt):
         net = D_DBPN_DN(in_channels=opt['in_channels'], out_channels=opt['out_channels'],
                         num_features=opt['num_features'], bp_stages=opt['num_blocks'],
                         upscale_factor=opt['scale'])
+
+    elif which_model == 'RDN_V3':
+        from .rdn_v3 import RDN_V3
+        net = RDN_V3(in_channels=opt['in_channels'], out_channels=opt['out_channels'],
+                             num_features=opt['num_features'], num_blocks = opt['num_blocks'], num_layers = opt['num_layers'],
+                             upscale_factor=opt['scale'])
+
+    elif which_model == 'RDN_DN':
+        from .rdn_DN import RDN_DN
+        net = RDN_DN(in_channels=opt['in_channels'], out_channels=opt['out_channels'],
+                             num_features=opt['num_features'], num_blocks = opt['num_blocks'], num_layers = opt['num_layers'],
+                             upscale_factor=opt['scale'])
+
+    elif which_model == 'RCAN':
+        from .rcan_arch import RCAN
+        net = RCAN(num_groups=opt['num_groups'],num_blocks=opt['num_blocks'],num_features=opt['num_features'],reduction=opt['reduction'],
+                                 scale=opt['scale'],rgb_range=opt['rgb_range'],in_channels=opt['in_channels'],res_scale=opt['res_scale'])    
+
+    elif which_model == 'RCAN_DN':
+        from .rcan_DN import RCAN_DN
+        net = RCAN_DN(num_groups=opt['num_groups'],num_blocks=opt['num_blocks'],num_features=opt['num_features'],reduction=opt['reduction'],
+                                 scale=opt['scale'],rgb_range=opt['rgb_range'],in_channels=opt['in_channels'],res_scale=opt['res_scale'])                                             
 
     elif which_model == 'SRFBN':
         from .srfbn_arch import SRFBN
@@ -155,15 +184,9 @@ def define_net(opt):
                              num_features=opt['num_features'], num_blocks = opt['num_blocks'], res_scale=opt['res_scale'],
                              upscale_factor=opt['scale'])
 
-    elif which_model == 'EDSR_VER2_BDDN':
-        from .edsr_ver2 import EDSR_VER2_BDDN
-        net = EDSR_VER2_BDDN(in_channels=opt['in_channels'], out_channels=opt['out_channels'],
-                             num_features=opt['num_features'], num_blocks = opt['num_blocks'], res_scale=opt['res_scale'],
-                             upscale_factor=opt['scale'])
-
     elif which_model == 'EDSR_V3':
         from .edsr_v3 import EDSR_V3
-        net = EDSR_VER2_BDDN(in_channels=opt['in_channels'], out_channels=opt['out_channels'],
+        net = EDSR_V3(in_channels=opt['in_channels'], out_channels=opt['out_channels'],
                              num_features=opt['num_features'], num_blocks = opt['num_blocks'], res_scale=opt['res_scale'],
                              upscale_factor=opt['scale'])
 

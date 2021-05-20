@@ -22,11 +22,17 @@
             "dataroot_HR": "../SRbenchmark/HR_x4",
             "dataroot_LR": "../SRbenchmark/LR_DN",
             "data_type": "img"
+        },
+        "test_set3": {
+            "mode": "LRHR",
+            "dataroot_HR": "../SRbenchmark/HR_x4",
+            "dataroot_LR": "../SRbenchmark/LR_BD",
+            "data_type": "img"
         }
     },
 
     "networks": {
-        "which_model": "D-DBPN_MOD",
+        "which_model": "D_DBPN_V3",
         "num_features": 64,
         "in_channels": 3,
         "out_channels": 3,
@@ -34,6 +40,6 @@
     },
 
     "solver": {
-        "pretrained_path": "./experiments/D-DBPN_MOD_BIDN_in3f64_x4/epochs/best_ckp.pth"
+        "pretrained_path": "./experiments/D_DBPN_V3_in3f64_x4/epochs/best_ckp.pth"
     }
 }

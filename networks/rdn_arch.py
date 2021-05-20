@@ -3,6 +3,7 @@
 
 import torch
 import torch.nn as nn
+import numpy as np
 
 class RDB_Conv(nn.Module):
     def __init__(self, inChannels, growRate, kSize=3):
@@ -81,7 +82,7 @@ class RDN(nn.Module):
         else:
             raise ValueError("scale must be 2 or 3 or 4.")
 
-    def forward(self, x):
+    def forward(self, x, is_test=False):
         f__1 = self.SFENet1(x)
         x  = self.SFENet2(f__1)
 

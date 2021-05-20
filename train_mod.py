@@ -6,20 +6,20 @@ import torch
 import options.options as option
 from utils import util
 import os
-from solvers import create_solver, create_solver_split
+from solvers import create_solver, create_solver_split, create_solver_v2, create_solver_v3
 from data import create_dataloader
 from data import create_dataset
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "6"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0,1"
 
 def main():
     parser = argparse.ArgumentParser(description='Train Super Resolution Models')
     #	parser.add_argument('-opt', type=str, required=True, help='Path to options JSON file.')
     #	opt = option.parse(parser.parse_args().opt)
-    # opt = option.parse('options/train/train_EDSR_mod.json')
-    opt = option.parse('options/train/train_EDSR_ver2.json')
     # opt = option.parse('options/train/train_EDSR.json')
-    # opt = option.parse('options/train/train_DPBN_mod.json')
+    # opt = option.parse('options/train/train_DBPN_mod.json')
+    # opt = option.parse('options/train/train_RDN.json')
+    opt = option.parse('options/train/train_RCAN_mod.json')
 
     # random seed
     seed = opt['solver']['manual_seed']
@@ -54,9 +54,9 @@ def main():
         else:
             raise NotImplementedError("[Error] Dataset phase [%s] in *.json is not recognized." % phase)
 
-    # solver = create_solver(opt)
-    solver = create_solver_split(opt)
-
+    solver = create_solver(opt)
+    # solver = create_solver_v3(opt) #for mod
+    
     scale = opt['scale']
     model_name = opt['networks']['which_model'].upper()
     print(model_name)
@@ -182,7 +182,8 @@ def main():
         print("[%s] PSNR: %.2f   SSIM: %.4f   Loss: %.6f " % (val_set3.name(),   
         sum(psnr_list_N)/len(psnr_list_N),
                                                                                               sum(ssim_list_N)/len(ssim_list_N),sum(val_loss_list_N)/len(val_loss_list_N)
-                                                                                              ))
+                                                                                              )) 
+                                                                                                                                                                       
 
         solver.set_current_log(solver_log)
         solver.save_checkpoint(epoch, epoch_is_best)
