@@ -152,7 +152,7 @@ class EDSR(nn.Module):
         act = nn.ReLU(True)
         self.sub_mean = MeanShift()
         self.add_mean = MeanShift(sign=1)
-        self.kernel = GaussianSmoothing(3, 7, 1.6)   #channel, kernel_size and sigma value
+        # self.kernel = GaussianSmoothing(3, 7, 1.6)   #channel, kernel_size and sigma value
 
         # define head module
         m_head = [conv(in_channels, n_feats, kernel_size)]

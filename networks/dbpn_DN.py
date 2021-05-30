@@ -52,7 +52,7 @@ class DBPN(nn.Module):
 
 class D_DBPN_DN(nn.Module):
     def __init__(self,in_channels, out_channels, num_features, bp_stages, upscale_factor=4, norm_type=None, act_type='prelu'):
-        super(D_DBPN_MOD, self).__init__()
+        super(D_DBPN_DN, self).__init__()
 
         if upscale_factor == 2:
             stride = 2

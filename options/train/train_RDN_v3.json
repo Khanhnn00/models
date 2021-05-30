@@ -17,7 +17,7 @@
             "dataroot_LR": "../dataset/result/LR_x4_npy",
             "data_type": "npy",
             "n_workers": 4,
-            "batch_size": 32,
+            "batch_size": 16,
             "LR_size": 32,
             "use_flip": true,
             "use_rot": true,

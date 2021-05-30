@@ -144,7 +144,7 @@ class SRSolver_v3(BaseSolver):
                     loss_feat = self.criterion_pix(output[1], output[3])
                     loss_sr_noise = self.criterion_pix(output[0], split_HR)
                     loss_sr_x = self.criterion_pix(output[2], split_HR)
-                    loss_sbatch = 10*loss_feat + loss_sr_noise + loss_sr_x
+                    loss_sbatch = loss_feat + loss_sr_noise + loss_sr_x
 
                 loss_sbatch /= self.split_batch
                 loss_sbatch.backward()

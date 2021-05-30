@@ -23,13 +23,13 @@
             "use_rot": true,
             "noise": "."
         },
-        "val": {
+        "val2": {
             "mode": "LRHR",
             "dataroot_HR": "../SRbenchmark/HR_x4",
             "dataroot_LR": "../SRbenchmark/LR_DN",
             "data_type": "img"
         },
-        "val2": {
+        "val": {
             "mode": "LRHR",
             "dataroot_HR": "../SRbenchmark/HR_x4",
             "dataroot_LR": "../SRbenchmark/LR_x4",
@@ -44,7 +44,7 @@
     },
 
     "networks": {
-        "which_model": "RDN_DN",
+        "which_model": "RDN",
         "num_features": 64,
         "in_channels": 3,
         "out_channels": 3,

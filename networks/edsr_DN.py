@@ -141,9 +141,9 @@ class Upsampler(nn.Sequential):
 
         super(Upsampler, self).__init__(*m)
 
-class EDSR_PLUS(nn.Module):
+class EDSR_DN(nn.Module):
     def __init__(self, in_channels, out_channels, num_features, num_blocks, res_scale, upscale_factor, conv=default_conv):
-        super(EDSR_PLUS, self).__init__()
+        super(EDSR_DN, self).__init__()
 
         n_resblocks = num_blocks
         n_feats = num_features
@@ -185,23 +185,11 @@ class EDSR_PLUS(nn.Module):
             noises = np.random.normal(scale=30, size=x.shape)
             noises = noises.round()
             ft = torch.from_numpy(noises.copy()).short().cuda()
-
             x_noise = x.short() + ft.short()
             x_noise = torch.clamp(x_noise, min=0, max=255).type(torch.uint8)
 
-            x_blur = motion_blur(x, 17, 90., 0.)
-
-            x_blur = self.sub_mean(x_blur)
-            feat_blur = self.head(x_blur)
-
-            x_noise = self.sub_mean(x_noise.float())
-            feat_noise = self.head(x_noise)
-
-            # #weighting
-            # p = self.weighting(feat_noise)
-
-            # x = (feat_x*(1-p)) + (feat_noise*(p))
-            x = feat_blur + feat_noise
+            x = self.sub_mean(x_noise.float())
+            x = self.head(x)
 
             res = self.body(x)
             res += x
@@ -213,8 +201,6 @@ class EDSR_PLUS(nn.Module):
         else:
             x = self.sub_mean(x)
             x = self.head(x)
-
-            x = x.mul_(2)
 
             res = self.body(x)
             res += x

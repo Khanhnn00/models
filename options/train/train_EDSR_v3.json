@@ -16,8 +16,8 @@
             "dataroot_HR": "../dataset/result/HR_x4_npy",
             "dataroot_LR": "../dataset/result/LR_x4_npy",
             "data_type": "npy",
-            "n_workers": 4,
-            "batch_size": 32,
+            "n_workers": 0,
+            "batch_size": 26,
             "LR_size": 48,
             "use_flip": true,
             "use_rot": true,
@@ -44,15 +44,12 @@
     },
 
     "networks": {
-        "which_model": "RCAN_DN",
-        "num_features": 64,
+        "which_model": "EDSR_V3",
+        "num_features": 256,
         "in_channels": 3,
         "out_channels": 3,
-        "num_blocks": 20,
-        "res_scale": 1,
-        "num_groups": 5,
-        "reduction": 16,
-        "rgb_range": 255
+        "num_blocks": 32,
+        "res_scale": 0.1
     },
 
     "solver": {
@@ -67,10 +64,10 @@
         "num_epochs": 500,
         "skip_threshold": 3,
         "split_batch": 2,
-        "save_ckp_step": 500,
+        "save_ckp_step": 50,
         "save_vis_step": 1,
         "pretrain": "resume",
-        "pretrained_path": "./experiments/RCAN_DN_in3f64_x4/epochs/last_ckp.pth",
+        "pretrained_path": "./experiments/EDSR_V3_in3f256_x4/epochs/last_ckp.pth",
         "cl_weights": [1.0, 1.0, 1.0, 1.0]
     }
 }
