@@ -10,14 +10,14 @@ from solvers import create_solver, create_solver_split, create_solver_v2, create
 from data import create_dataloader
 from data import create_dataset
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "7"
+os.environ["CUDA_VISIBLE_DEVICES"] = "3"
 
 def main():
     parser = argparse.ArgumentParser(description='Train Super Resolution Models')
     #	parser.add_argument('-opt', type=str, required=True, help='Path to options JSON file.')
     #	opt = option.parse(parser.parse_args().opt)
-    opt = option.parse('options/train/train_EDSR_v3.json')
-    # opt = option.parse('options/train/train_RDN_v3.json')
+    # opt = option.parse('options/train/train_EDSR_v3.json')
+    opt = option.parse('options/train/train_RDN_v3.json')
     # opt = option.parse('options/train/train_RCAN_v3.json')
     # opt = option.parse('options/train/train_RDN.json')
     # opt = option.parse('options/train/train_DBPN_mod.json')
@@ -56,9 +56,9 @@ def main():
         else:
             raise NotImplementedError("[Error] Dataset phase [%s] in *.json is not recognized." % phase)
 
-    # solver = create_solver_v3(opt)
+    solver = create_solver_v3(opt)
     # solver = create_solver_split(opt) #for mod
-    solver = create_solver_abla(opt)    #for ablation
+    # solver = create_solver_v2(opt)    #for ablation
     
     scale = opt['scale']
     model_name = opt['networks']['which_model'].upper()
@@ -117,7 +117,7 @@ def main():
 
             # calculate evaluation metrics
             visuals = solver.get_current_visual()
-            psnr, ssim = util.calc_metrics(visuals['SR'], visuals['HR'], crop_border=scale, test_Y=False)
+            psnr, ssim = util.calc_metrics(visuals['SR'], visuals['HR'], crop_border=scale, test_Y=True)
             psnr_list_MN.append(psnr)
             ssim_list_MN.append(ssim)
 
@@ -149,7 +149,7 @@ def main():
 
             # calculate evaluation metrics
             visuals = solver.get_current_visual()
-            psnr, ssim = util.calc_metrics(visuals['SR'], visuals['HR'], crop_border=scale, test_Y=False)
+            psnr, ssim = util.calc_metrics(visuals['SR'], visuals['HR'], crop_border=scale, test_Y=True)
             psnr_list_M.append(psnr)
             ssim_list_M.append(ssim)
         
@@ -174,7 +174,7 @@ def main():
 
             # calculate evaluation metrics
             visuals = solver.get_current_visual()
-            psnr, ssim = util.calc_metrics(visuals['SR'], visuals['HR'], crop_border=scale, test_Y=False)
+            psnr, ssim = util.calc_metrics(visuals['SR'], visuals['HR'], crop_border=scale, test_Y=True)
             psnr_list_N.append(psnr)
             ssim_list_N.append(ssim)
         

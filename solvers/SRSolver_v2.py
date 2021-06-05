@@ -134,9 +134,17 @@ class SRSolver_v2(BaseSolver):
                     for step in range(len(loss_steps)):
                         loss_sbatch += self.cl_weights[step] * loss_steps[step]
                 else:
-                    output = self.model(split_LR, is_test=False)
+                    output = self.model(split_LR, is_test=False)    #res_n, feat_n, res_x, feat_x
                     # loss_sbatch = self.criterion_pix(output, split_HR)
-                    loss_sbatch = self.criterion_pix(nn.functional.interpolate(output, (48, 48), mode='bicubic').clamp(min=0, max=255), split_LR)
+                    # print(output[0].shape)
+                    # print(output[1].shape)
+                    # print(output[2].shape)
+                    # print(output[3].shape)
+                    # print(split_HR.shape)
+                    loss_feat = self.criterion_pix(output[1], output[3])
+                    loss_sr_noise = self.criterion_pix(output[0], split_HR)
+                    loss_sr_x = self.criterion_pix(output[2], split_HR)
+                    loss_sbatch = loss_feat + loss_sr_x
 
                 loss_sbatch /= self.split_batch
                 loss_sbatch.backward()
@@ -167,6 +175,7 @@ class SRSolver_v2(BaseSolver):
                 self.SR = SR[-1]
             else:
                 self.SR = SR
+            # print(type(SR))
 
         self.model.train()
         if self.is_train:
@@ -219,7 +228,7 @@ class SRSolver_v2(BaseSolver):
         return output
 
 
-    def _overlap_crop_forward(self, x, shave=10, min_size=100000, bic=None, n_GPUs=4, is_test=False):
+    def _overlap_crop_forward(self, x, shave=10, min_size=100000, bic=None, n_GPUs=2, is_test=True):
         """
         chop for less memory consumption during test
         """
@@ -253,10 +262,7 @@ class SRSolver_v2(BaseSolver):
                 if bic is not None:
                     bic_batch = torch.cat(bic_list[i:(i + n_GPUs)], dim=0)
 
-                if self.opt['networks']['which_model'] == "RANDOM":
-                    sr_batch_temp = self.model(lr_batch, is_test=is_test)
-                else:
-                    sr_batch_temp = self.model(lr_batch, is_test=is_test)
+                sr_batch_temp = self.model(lr_batch, is_test=is_test)
 
                 if isinstance(sr_batch_temp, list):
                     sr_batch = sr_batch_temp[-1]

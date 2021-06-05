@@ -7,7 +7,7 @@ from solvers import create_solver, create_solver_split, create_solver_v2, create
 from data import create_dataloader
 from data import create_dataset
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+os.environ["CUDA_VISIBLE_DEVICES"] = "3"
 
 def main():
     parser = argparse.ArgumentParser(description='Test Super Resolution Models')
@@ -17,11 +17,11 @@ def main():
     # opt = option.parse('./options/test/test_EDSR_v3.json')
     # opt = option.parse('./options/test/test_EDSR_mod.json')
     # opt = option.parse('./options/test/test_DPBN_mod.json')
-    opt = option.parse('./options/test/test_RDN.json')
+    # opt = option.parse('./options/test/test_RDN.json')
     # opt = option.parse('./options/test/test_DPBN.json')
     # opt = option.parse('./options/test/test_DPBN.json')
     # opt = option.parse('./options/test/test_RCAN.json')
-    # opt = option.parse('./options/test/test_RCAN_v3.json')
+    opt = option.parse('./options/test/test_RCAN_v3.json')
     # opt = option.parse('./options/test/test_RCAN_DN.json')
 
 

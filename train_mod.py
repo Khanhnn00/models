@@ -6,11 +6,11 @@ import torch
 import options.options as option
 from utils import util
 import os
-from solvers import create_solver, create_solver_split, create_solver_v2, create_solver_v3
+from solvers import create_solver, create_solver_split, create_solver_v2, create_solver_v3, create_solver_abla
 from data import create_dataloader
 from data import create_dataset
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "7"
+os.environ["CUDA_VISIBLE_DEVICES"] = "4"
 
 def main():
     parser = argparse.ArgumentParser(description='Train Super Resolution Models')
@@ -18,7 +18,7 @@ def main():
     #	opt = option.parse(parser.parse_args().opt)
     # opt = option.parse('options/train/train_EDSR.json')
     # opt = option.parse('options/train/train_DBPN_mod.json')
-    opt = option.parse('options/train/train_RDN_v3.json')
+    opt = option.parse('options/train/train_EDSR_v3.json')
     # opt = option.parse('options/train/train_RCAN_mod.json')
     # opt = option.parse('options/train/train_DBPN_mod.json')
 
@@ -56,7 +56,9 @@ def main():
             raise NotImplementedError("[Error] Dataset phase [%s] in *.json is not recognized." % phase)
 
     # solver = create_solver_split(opt)
-    solver = create_solver_v3(opt) #for mod
+    # solver = create_solver_v3(opt) #for mod
+    # solver = create_solver_abla(opt)
+    solver = create_solver_v2(opt)
     
     scale = opt['scale']
     model_name = opt['networks']['which_model'].upper()
