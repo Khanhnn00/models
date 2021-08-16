@@ -25,6 +25,8 @@ def create_dataset(dataset_opt):
         from data.LRHR_EDSR_mod import LRHRDataset as D
     elif mode == 'LRHR_BD_CL':
         from data.LRHR_dataset_BD_CL import LRHRDataset as D
+    elif mode == 'LRHR_V4':
+        from data.LRHR_v4 import LRHRDataset as D
     else:
         raise NotImplementedError("Dataset [%s] is not recognized." % mode)
     dataset = D(dataset_opt)

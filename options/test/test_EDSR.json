@@ -41,6 +41,6 @@
     },
 
     "solver": {
-        "pretrained_path": "./experiments/EDSR_BI_MYCONFIG/epochs/best_ckp.pth"
+        "pretrained_path": "./experiments/EDSR_in3f256_x4/epochs/best_ckp.pth"
     }
 }

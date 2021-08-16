@@ -175,37 +175,18 @@ class EDSR(nn.Module):
         self.body = nn.Sequential(*m_body)
         self.tail = nn.Sequential(*m_tail)
 
-    def forward(self, x, is_test):
+    def forward(self, x):
         # print(x.shape)
-        if is_test == False:
-            # bi = x
-            noises = np.random.normal(scale=30, size=x.shape)
-            noises = noises.round()
-            ft = torch.from_numpy(noises.copy()).short().cuda()
-            x_noise = x.short() + ft.short()
-            x_noise = torch.clamp(x_noise, min=0, max=255).type(torch.uint8)
+        x = self.sub_mean(x)
+        x = self.head(x)
 
-            x = self.sub_mean(x_noise.float())
-            x = self.head(x)
+        res = self.body(x)
+        res += x
 
-            res = self.body(x)
-            res += x
+        x = self.tail(res)
+        x = self.add_mean(x)
 
-            x = self.tail(res)
-            x = self.add_mean(x)
-
-            return x
-        else:
-            x = self.sub_mean(x)
-            x = self.head(x)
-
-            res = self.body(x)
-            res += x
-
-            x = self.tail(res)
-            x = self.add_mean(x)
-
-            return x 
+        return x 
 
 
     def load_state_dict(self, state_dict, strict=True):

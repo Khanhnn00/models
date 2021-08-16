@@ -8,6 +8,7 @@ import cv2
 from PIL import Image
 
 import torch
+import torch.nn.functional as F
 
 IMG_EXTENSIONS = ['.jpg', '.JPG', '.jpeg', '.JPEG', '.png', '.PNG', '.ppm', '.PPM', '.bmp', '.BMP']
 BINARY_EXTENSIONS = ['.npy']
@@ -247,3 +248,35 @@ def modcrop(img_in, scale):
     else:
         raise ValueError('Wrong img ndim: [%d].' % img.ndim)
     return img
+
+def degradation(img, k_path, noise_im, device=torch.device('cuda')):
+
+    scale_factor = [4, 4]
+
+
+    k = [f for f in os.listdir(k_path) if f.endswith('.npy')]
+    
+    r = random.randint(0, len(k)-1)
+
+    kernel = np.load('{}/{}'.format(k_path, k[r]))
+    input = torch.from_numpy(img).type(torch.FloatTensor).to(device).unsqueeze(0).permute(3, 0, 1, 2)
+    input = F.pad(input, pad=(kernel.shape[0] // 2, kernel.shape[0] // 2, kernel.shape[0] // 2, kernel.shape[0] // 2),
+                mode='circular')
+    kernel = torch.from_numpy(kernel).type(torch.FloatTensor).to(device).unsqueeze(0).unsqueeze(0)
+
+    # blur
+    output = F.conv2d(input, kernel)
+    output = output.permute(2, 3, 0, 1).squeeze(3).cpu().numpy()
+    # print(output.max())
+
+    # down-sample
+    output = output[::scale_factor[0], ::scale_factor[1], :]
+
+    # add AWGN noise
+    output += np.random.normal(0, np.random.uniform(0, noise_im), output.shape).astype(np.int16)
+    # output = output*255
+    output = np.clip(output, 0, 255).astype(np.uint8)
+    # output = Image.fromarray(output)
+
+
+    return output

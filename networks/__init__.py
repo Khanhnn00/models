@@ -148,7 +148,19 @@ def define_net(opt):
     elif which_model == 'RCAN_V3':
         from .rcan_v3 import RCAN_V3
         net = RCAN_V3(num_groups=opt['num_groups'],num_blocks=opt['num_blocks'],num_features=opt['num_features'],reduction=opt['reduction'],
-                                 scale=opt['scale'],rgb_range=opt['rgb_range'],in_channels=opt['in_channels'],res_scale=opt['res_scale'])   
+                                 scale=opt['scale'],rgb_range=opt['rgb_range'],in_channels=opt['in_channels'],res_scale=opt['res_scale'])  
+
+    elif which_model == 'RCAN_V4':
+        from .rcan_v3 import RCAN_V3
+        net = RCAN_V3(num_groups=opt['num_groups'],num_blocks=opt['num_blocks'],num_features=opt['num_features'],reduction=opt['reduction'],
+                                 scale=opt['scale'],rgb_range=opt['rgb_range'],in_channels=opt['in_channels'],res_scale=opt['res_scale']) 
+
+    elif which_model == 'HAN':
+        from .han_arch import HAN
+        net = HAN(in_channels=opt['in_channels'],n_resgroups=opt['num_groups'], n_resblocks=opt['num_blocks'],
+                                  n_feats=opt['num_features'], reduction=opt['reduction'], rgb_range=opt['rgb_range'],
+                                  res_scale=opt['res_scale'])
+
 
     elif which_model == 'SRFBN':
         from .srfbn_arch import SRFBN
@@ -192,6 +204,12 @@ def define_net(opt):
     elif which_model == 'EDSR_V3':
         from .edsr_v3 import EDSR_V3
         net = EDSR_V3(in_channels=opt['in_channels'], out_channels=opt['out_channels'],
+                             num_features=opt['num_features'], num_blocks = opt['num_blocks'], res_scale=opt['res_scale'],
+                             upscale_factor=opt['scale'])
+
+    elif which_model == 'EDSR_V4':
+        from .edsr_v4 import EDSR_V4
+        net = EDSR_V4(in_channels=opt['in_channels'], out_channels=opt['out_channels'],
                              num_features=opt['num_features'], num_blocks = opt['num_blocks'], res_scale=opt['res_scale'],
                              upscale_factor=opt['scale'])
 

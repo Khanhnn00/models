@@ -13,11 +13,11 @@
     "datasets": {
         "train": {
             "mode": "LRHR",
-            "dataroot_HR": "../dataset/result/HR_x4_npy",
-            "dataroot_LR": "../dataset/result/LR_x4_npy",
+            "dataroot_HR": "../dataset/result_noise/HR_x4_npy",
+            "dataroot_LR": "../dataset/result_noise/LR_x4_npy",
             "data_type": "npy",
             "n_workers": 0,
-            "batch_size": 32,
+            "batch_size": 128,
             "LR_size": 48,
             "use_flip": true,
             "use_rot": true,
@@ -44,7 +44,7 @@
     },
 
     "networks": {
-        "which_model": "EDSR_V3",
+        "which_model": "EDSR",
         "num_features": 256,
         "in_channels": 3,
         "out_channels": 3,
@@ -64,9 +64,9 @@
         "num_epochs": 500,
         "skip_threshold": 3,
         "split_batch": 2,
-        "save_ckp_step": 50,
+        "save_ckp_step": 500,
         "save_vis_step": 1,
-        "pretrain": "resume",
+        "pretrain": null,
         "pretrained_path": "./experiments/EDSR_V3_in3f256_x4/epochs/last_ckp.pth",
         "cl_weights": [1.0, 1.0, 1.0, 1.0]
     }

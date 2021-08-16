@@ -1,0 +1,129 @@
+{
+  "mode": "sr",
+  "use_cl": false,
+  "gpu_ids": [
+    1
+  ],
+  "scale": 4,
+  "is_train": true,
+  "use_chop": true,
+  "rgb_range": 255,
+  "self_ensemble": false,
+  "save_image": false,
+  "datasets": {
+    "train": {
+      "mode": "LRHR_V4",
+      "dataroot_HR": "../dataset/result/HR_x4_npy",
+      "dataroot_LR": "../dataset/result/LR_x4_npy",
+      "kernel": "../dataset/kernel_blur",
+      "data_type": "npy",
+      "n_workers": 0,
+      "batch_size": 48,
+      "LR_size": 48,
+      "use_flip": true,
+      "use_rot": true,
+      "noise": ".",
+      "phase": "train",
+      "scale": 4,
+      "rgb_range": 255
+    },
+    "val": {
+      "mode": "LRHR",
+      "dataroot_HR": "../SRbenchmark/HR_x4",
+      "dataroot_LR": "../SRbenchmark/0.7",
+      "data_type": "img",
+      "phase": "val",
+      "scale": 4,
+      "rgb_range": 255
+    },
+    "val2": {
+      "mode": "LRHR",
+      "dataroot_HR": "../SRbenchmark/HR_x4",
+      "dataroot_LR": "../SRbenchmark/2.5",
+      "data_type": "img",
+      "phase": "val2",
+      "scale": 4,
+      "rgb_range": 255
+    },
+    "val3": {
+      "mode": "LRHR",
+      "dataroot_HR": "../SRbenchmark/HR_x4",
+      "dataroot_LR": "../SRbenchmark/3.1",
+      "data_type": "img",
+      "phase": "val3",
+      "scale": 4,
+      "rgb_range": 255
+    },
+    "val4": {
+      "mode": "LRHR",
+      "dataroot_HR": "../SRbenchmark/HR_x4",
+      "dataroot_LR": "../SRbenchmark/4.0",
+      "data_type": "img",
+      "phase": "val4",
+      "scale": 4,
+      "rgb_range": 255
+    },
+    "val5": {
+      "mode": "LRHR",
+      "dataroot_HR": "../SRbenchmark/HR_x4",
+      "dataroot_LR": "../SRbenchmark/5.2",
+      "data_type": "img",
+      "phase": "val5",
+      "scale": 4,
+      "rgb_range": 255
+    },
+    "val6": {
+      "mode": "LRHR",
+      "dataroot_HR": "../SRbenchmark/HR_x4",
+      "dataroot_LR": "../SRbenchmark/10.3",
+      "data_type": "img",
+      "phase": "val6",
+      "scale": 4,
+      "rgb_range": 255
+    }
+  },
+  "networks": {
+    "which_model": "EDSR_V4",
+    "num_features": 256,
+    "in_channels": 3,
+    "out_channels": 3,
+    "num_blocks": 32,
+    "res_scale": 0.1,
+    "scale": 4
+  },
+  "solver": {
+    "type": "ADAM",
+    "learning_rate": 0.0001,
+    "weight_decay": 0,
+    "lr_scheme": "MultiStepLR",
+    "lr_steps": [
+      200,
+      400,
+      600,
+      800
+    ],
+    "lr_gamma": 0.5,
+    "loss_type": "l1",
+    "manual_seed": 0,
+    "num_epochs": 500,
+    "skip_threshold": 3,
+    "split_batch": 2,
+    "save_ckp_step": 50,
+    "save_vis_step": 1,
+    "pretrain": null,
+    "pretrained_path": "./experiments/EDSR_abla_1/epochs/last_ckp.pth",
+    "cl_weights": [
+      1.0,
+      1.0,
+      1.0,
+      1.0
+    ]
+  },
+  "timestamp": "210814-180247",
+  "path": {
+    "exp_root": "experiments/EDSR_V4_in3f256_x4",
+    "epochs": "experiments/EDSR_V4_in3f256_x4/epochs",
+    "visual": "experiments/EDSR_V4_in3f256_x4/visual",
+    "records": "experiments/EDSR_V4_in3f256_x4/records"
+  }
+}

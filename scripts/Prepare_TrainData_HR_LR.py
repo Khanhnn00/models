@@ -10,10 +10,15 @@ from scipy import misc
 import numpy as np
 import datetime
 import imageio
+import os.path as osp
+
 from multiprocessing.dummy import Pool as ThreadPool
 
-train_HR_dir = './dataset/DIV2K_train_HR'
-save_dir = './dataset/result'
+train_HR_dir = '../../dataset/DIV_noise'
+save_dir = '../../dataset/result_noise'
+
+if not osp.isdir(save_dir):
+	os.mkdir(save_dir)
 
 # train_HR_dir = '../../dataset/Flickr2K/Flickr2K_HR'
 # save_dir = '../../dataset/Flickr2K'

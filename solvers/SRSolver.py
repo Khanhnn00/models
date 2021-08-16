@@ -336,7 +336,7 @@ class SRSolver(BaseSolver):
             else:
                 checkpoint = torch.load(model_path)
                 if 'state_dict' in checkpoint.keys(): checkpoint = checkpoint['state_dict']
-                load_func = self.model.load_state_dict if isinstance(self.model, nn.DataParallel) \
+                load_func = self.model.module.load_state_dict if isinstance(self.model, nn.DataParallel) \
                     else self.model.module.load_state_dict
                 load_func(checkpoint)
 

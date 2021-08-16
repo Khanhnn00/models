@@ -3,7 +3,7 @@ import imageio
 
 import options.options as option
 from utils import util
-from solvers import create_solver, create_solver_split, create_solver_v2, create_solver_v3
+from solvers import create_solver, create_solver_v4, create_solver_v3
 from data import create_dataloader
 from data import create_dataset
 
@@ -14,14 +14,14 @@ def main():
     # parser.add_argument('-opt', type=str, required=True, help='Path to options JSON file.')
     # opt = option.parse(parser.parse_args().opt)
     # opt = option.parse('./options/test/test_EDSR.json')
-    # opt = option.parse('./options/test/test_EDSR_v3.json')
+    opt = option.parse('./options/test/test_EDSR_v3.json')
     # opt = option.parse('./options/test/test_EDSR_mod.json')
     # opt = option.parse('./options/test/test_DPBN_mod.json')
     # opt = option.parse('./options/test/test_RDN.json')
     # opt = option.parse('./options/test/test_DPBN.json')
     # opt = option.parse('./options/test/test_DPBN.json')
     # opt = option.parse('./options/test/test_RCAN.json')
-    opt = option.parse('./options/test/test_RCAN_v3.json')
+    # opt = option.parse('./options/test/test_RCAN_v3.json')
     # opt = option.parse('./options/test/test_RCAN_DN.json')
 
 
@@ -46,7 +46,8 @@ def main():
 
     # create solver (and load model)
     # solver = create_solver(opt)
-    solver = create_solver_v3(opt)
+    # solver = create_solver_v3(opt)
+    solver = create_solver_v4(opt)
     # Test phase
     print('===> Start Test')
     print("==================================================")

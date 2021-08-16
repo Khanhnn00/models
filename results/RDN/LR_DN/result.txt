@@ -1,0 +1,7 @@
+[1/5] baby_LRBI_x4_DN.png || PSNR(dB)/SSIM: 20.49/0.3025 || Timer: 0.1075 sec .
+[2/5] bird_LRBI_x4_DN.png || PSNR(dB)/SSIM: 20.34/0.3465 || Timer: 0.0600 sec .
+[3/5] butterfly_LRBI_x4_DN.png || PSNR(dB)/SSIM: 18.63/0.4604 || Timer: 0.0826 sec .
+[4/5] head_LRBI_x4_DN.png || PSNR(dB)/SSIM: 21.06/0.2896 || Timer: 0.0884 sec .
+[5/5] woman_LRBI_x4_DN.png || PSNR(dB)/SSIM: 19.71/0.3574 || Timer: 0.0855 sec .
+---- Average PSNR(dB) /SSIM /Speed(s) for [LR_DN] ----
+PSNR: 20.05      SSIM: 0.3513      Speed: 0.0848
