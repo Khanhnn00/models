@@ -14,7 +14,8 @@ def main():
     # parser.add_argument('-opt', type=str, required=True, help='Path to options JSON file.')
     # opt = option.parse(parser.parse_args().opt)
     # opt = option.parse('./options/test/test_EDSR.json')
-    opt = option.parse('./options/test/test_EDSR_v3.json')
+    opt = option.parse('./options/test/test_EDSR_x2.json')
+    # opt = option.parse('./options/test/test_EDSR_v3.json')
     # opt = option.parse('./options/test/test_EDSR_mod.json')
     # opt = option.parse('./options/test/test_DPBN_mod.json')
     # opt = option.parse('./options/test/test_RDN.json')
@@ -45,9 +46,9 @@ def main():
         bm_names.append(test_set.name())
 
     # create solver (and load model)
-    # solver = create_solver(opt)
+    solver = create_solver(opt)
     # solver = create_solver_v3(opt)
-    solver = create_solver_v4(opt)
+    # solver = create_solver_v4(opt)
     # Test phase
     print('===> Start Test')
     print("==================================================")

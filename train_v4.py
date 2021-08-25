@@ -130,6 +130,7 @@ def main():
         print('===> Validating...',)
 
         cnt = 1
+        epoch_is_best = False
         for sth in loader_list:
 
             val_loss = []
@@ -153,25 +154,30 @@ def main():
             solver_log['records']['val_loss_{}'.format(cnt)].append(sum(val_loss)/len(val_loss))
             solver_log['records']['psnr_{}'.format(cnt)].append(sum(val_psnr)/len(val_psnr))
             solver_log['records']['ssim_{}'.format(cnt)].append(sum(val_ssim)/len(val_ssim))
+            if cnt == 2:
+                if solver_log['best_pred'] < sum(val_psnr)/len(val_psnr):
+                    solver_log['best_pred'] = sum(val_psnr)/len(val_psnr)
+                    epoch_is_best = True
+                    solver_log['best_epoch'] = epoch
             cnt +=1 
 
         # record the best epoch
         # epoch_is_best = False
-        # if solver_log['best_pred'] < (sum(psnr_list_MN)/len(psnr_list_MN)):
-        #     solver_log['best_pred'] = (sum(psnr_list_MN)/len(psnr_list_MN))
+        # if solver_log['best_pred'] < (sum( solver_log['records']['psnr_2'][epoch-1])/len(solver_log['records']['psnr_2'][epoch-1])):
+        #     solver_log['best_pred'] = (sum(solver_log['records']['psnr_2'][epoch-1])/len(solver_log['records']['psnr_2'][epoch-1]))
         #     epoch_is_best = True
         #     solver_log['best_epoch'] = epoch
 
-        epoch_is_best = False
-        if epoch ==1:
-            epoch_is_best = True
-            solver_log['best_pred'] = (sum(train_loss_list)/len(train_set))
-            solver_log['best_epoch'] = epoch
-        else:
-            if solver_log['best_pred'] > (sum(train_loss_list)/len(train_set)):
-                solver_log['best_pred'] = (sum(train_loss_list)/len(train_set))
-                epoch_is_best = True
-                solver_log['best_epoch'] = epoch
+        # epoch_is_best = False
+        # if epoch ==1:
+        #     epoch_is_best = True
+        #     solver_log['best_pred'] = (sum(train_loss_list)/len(train_set))
+        #     solver_log['best_epoch'] = epoch
+        # else:
+        #     if solver_log['best_pred'] > (sum(train_loss_list)/len(train_set)):
+        #         solver_log['best_pred'] = (sum(train_loss_list)/len(train_set))
+        #         epoch_is_best = True
+        #         solver_log['best_epoch'] = epoch
 
 
         # print("[%s] PSNR: %.2f   SSIM: %.4f   Loss: %.6f   Best PSNR: %.2f in Epoch: [%d]" % (val_set.name(),
