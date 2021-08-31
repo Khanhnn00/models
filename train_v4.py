@@ -42,42 +42,12 @@ def main():
             print('===> Train Dataset: %s   Number of images: [%d]' % (train_set.name(), len(train_set)))
             if train_loader is None: raise ValueError("[Error] The training data does not exist")
 
-        elif phase == 'val':
+        elif phase.find('val') > 0:
             val_set = create_dataset(dataset_opt)
             val_loader = create_dataloader(val_set, dataset_opt)
             loader_list.append(val_loader)
             print('===> Val Dataset: %s   Number of images: [%d]' % (val_set.name(), len(val_set)))
         
-        elif phase == 'val2':
-            val2 = create_dataset(dataset_opt)
-            val_loader2 = create_dataloader(val2, dataset_opt)
-            loader_list.append(val_loader2)
-            print('===> Val Dataset: %s   Number of images: [%d]' % (val2.name(), len(val2)))
-        
-        elif phase == 'val3':
-            val3 = create_dataset(dataset_opt)
-            val_loader3 = create_dataloader(val3, dataset_opt)
-            loader_list.append(val_loader3)
-            print('===> Val Dataset: %s   Number of images: [%d]' % (val3.name(), len(val3)))
-
-        elif phase == 'val4':
-            val_set4 = create_dataset(dataset_opt)
-            val_loader4 = create_dataloader(val_set4, dataset_opt)
-            loader_list.append(val_loader4)
-            print('===> Val Dataset: %s   Number of images: [%d]' % (val_set4.name(), len(val_set4)))
-
-        elif phase == 'val5':
-            val5 = create_dataset(dataset_opt)
-            val_loader5 = create_dataloader(val5, dataset_opt)
-            loader_list.append(val_loader5)
-            print('===> Val Dataset: %s   Number of images: [%d]' % (val5.name(), len(val5)))
-
-        elif phase == 'val6':
-            val6 = create_dataset(dataset_opt)
-            val_loader6 = create_dataloader(val6, dataset_opt)
-            loader_list.append(val_loader6)
-            print('===> Val Dataset: %s   Number of images: [%d]' % (val6.name(), len(val6)))
-
         else:
             raise NotImplementedError("[Error] Dataset phase [%s] in *.json is not recognized." % phase)
 

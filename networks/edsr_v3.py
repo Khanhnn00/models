@@ -7,8 +7,8 @@ import torch
 import torch.nn as nn
 import numpy as np
 import kornia
-from kornia import motion_blur
 from torch.nn import functional as F
+import random
 
 class GaussianSmoothing(nn.Module):
     def __init__(self, channels, kernel_size, sigma, dim=2):
@@ -159,7 +159,7 @@ class EDSR_V3(nn.Module):
             nn.AdaptiveAvgPool2d(1),
             nn.Sigmoid()
         )
-        self.kernel = GaussianSmoothing(3, 7, 1.6)   #channel, kernel_size and sigma value
+        # self.kernel = GaussianSmoothing(3, 7, 1.6)   #channel, kernel_size and sigma value
         # self.conv1 = BasicBlock(conv, 512, 256, 1)
         # define head module
         m_head = [conv(in_channels, n_feats, kernel_size)]
@@ -231,7 +231,15 @@ class EDSR_V3(nn.Module):
         # img = img.squeeze(0).permute(1,2,0).detach().cpu().numpy()
         if is_test == False:
             
-            noises = np.random.normal(scale=30, size=x.shape)
+            scale = random.randint(0,3)
+            if scale==0:
+                noises = np.random.normal(scale=10, size=x.shape)
+            elif scale==1:
+                noises = np.random.normal(scale=20, size=x.shape)
+            elif scale==2:
+                noises = np.random.normal(scale=30, size=x.shape)
+            else:
+                noises = np.random.normal(scale=40, size=x.shape)
             noises = noises.round()
             ft = torch.from_numpy(noises.copy()).short().cuda()
 
