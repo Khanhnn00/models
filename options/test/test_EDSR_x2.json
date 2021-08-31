@@ -1,0 +1,34 @@
+{
+    "mode": "sr",
+    "use_cl": false,
+    "gpu_ids": [0],
+
+    "scale": 4,
+    "degradation": "BI",
+    "is_train": false,
+    "use_chop": true,
+    "rgb_range": 255,
+    "self_ensemble": false,
+
+    "datasets": {
+            "test_set1": {
+                "mode": "LRHR",
+                "dataroot_HR": "../SRbenchmark/HR_x4",
+                "dataroot_LR": "../SRbenchmark/LR_x4",
+                "data_type": "img"
+            }
+        },
+
+    "networks": {
+        "which_model": "EDSR_x2",
+        "num_features": 64,
+        "in_channels": 3,
+        "out_channels": 3,
+        "num_blocks": 16,
+        "res_scale": 1
+    },
+
+    "solver": {
+        "pretrained_path": "./experiments/EDSR_x4/best_ckp.pth"
+    }
+}

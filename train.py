@@ -123,15 +123,21 @@ def main():
 
         # record the best epoch
         epoch_is_best = False
-        if solver_log['best_pred'] < solver_log['records']['psnr_5']:
-            solver_log['best_pred'] = solver_log['records']['psnr_5']
+        if solver_log['best_pred'] < solver_log['records']['psnr_5'][epoch-1]:
+            solver_log['best_pred'] = solver_log['records']['psnr_5'][epoch-1]
             epoch_is_best = True
             solver_log['best_epoch'] = epoch
+        print(type(solver_log['records']['psnr_5'][epoch-1]))
+        print(type(solver_log['records']['psnr_5'][epoch-1]))
+        print(type(solver_log['records']['psnr_5'][epoch-1]))
+        print(type(solver_log['records']['psnr_5'][epoch-1]))
+        print(type(solver_log['records']['psnr_5'][epoch-1]))
+        print(solver_log['best_epoch'])
 
         print("[%s] PSNR: %.2f   SSIM: %.4f   Loss: %.6f   Best PSNR: %.2f in Epoch: [%d]" % (val_set.name(),
-                                                                                              solver_log['records']['psnr_5'],
-                                                                                              solver_log['records']['ssim_5'],
-                                                                                              solver_log['records']['val_loss_5'],
+                                                                                              solver_log['records']['psnr_5'][epoch-1],
+                                                                                              solver_log['records']['ssim_5'][epoch-1],
+                                                                                              solver_log['records']['val_loss_5'][epoch-1],
                                                                                               solver_log['best_pred'],
                                                                                               solver_log['best_epoch']))
                                                                                                                                                                        

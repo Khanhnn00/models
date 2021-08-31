@@ -17,28 +17,46 @@
             "dataroot_LR": "../dataset/result/LR_x4_npy",
             "data_type": "npy",
             "n_workers": 0,
-            "batch_size": 26,
+            "batch_size": 48,
             "LR_size": 48,
             "use_flip": true,
             "use_rot": true,
             "noise": "."
         },
-        "val3": {
-            "mode": "LRHR",
-            "dataroot_HR": "../SRbenchmark/HR_x4",
-            "dataroot_LR": "../SRbenchmark/LR_BD",
-            "data_type": "img"
-        },
-        "val2": {
+        "val1": {
             "mode": "LRHR",
             "dataroot_HR": "../SRbenchmark/HR_x4",
             "dataroot_LR": "../SRbenchmark/LR_x4",
             "data_type": "img"
         },
-        "val": {
+        "val2": {
             "mode": "LRHR",
             "dataroot_HR": "../SRbenchmark/HR_x4",
-            "dataroot_LR": "../SRbenchmark/LR_DN",
+            "dataroot_LR": "../SRbenchmark/LR_BD",
+            "data_type": "img"
+        },
+        "val3": {
+            "mode": "LRHR",
+            "dataroot_HR": "../SRbenchmark/HR_x4",
+            "dataroot_LR": "../SRbenchmark/LR_x4_10",
+            "data_type": "img"
+        },
+        "val4": {
+            "mode": "LRHR",
+            "dataroot_HR": "../SRbenchmark/HR_x4",
+            "dataroot_LR": "../SRbenchmark/LR_x4_20",
+            "data_type": "img"
+        },
+        "val5": {
+            "mode": "LRHR",
+            "dataroot_HR": "../SRbenchmark/HR_x4",
+            "dataroot_LR": "../SRbenchmark/LR_x4_30",
+            "data_type": "img"
+        },
+        "val6": {
+            "mode": "LRHR",
+            "dataroot_HR": "../SRbenchmark/HR_x4",
+            "dataroot_LR": "../SRbenchmark/LR_x4_40",
             "data_type": "img"
         }
     },
@@ -64,7 +82,7 @@
         "num_epochs": 500,
         "skip_threshold": 3,
         "split_batch": 2,
-        "save_ckp_step": 50,
+        "save_ckp_step": 250,
         "save_vis_step": 1,
         "pretrain": null,
         "pretrained_path": "./experiments/EDSR_abla_1/epochs/last_ckp.pth",

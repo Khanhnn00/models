@@ -24,15 +24,6 @@ class SRSolver_v3(BaseSolver):
         self.SR = None
 
         self.records = {'train_loss': [],
-                        'val_loss_MN': [],
-                        'psnr_MN': [],
-                        'ssim_MN': [],
-                        'val_loss_M': [],
-                        'psnr_M': [],
-                        'ssim_M': [],
-                        'val_loss_N': [],
-                        'psnr_N': [],
-                        'ssim_N': [],
                         'lr': []
         }
 
@@ -406,19 +397,11 @@ class SRSolver_v3(BaseSolver):
 
 
     def save_current_log(self):
+        data = {}
+        for i in self.records.keys():
+            data[i] = self.records[i]
         data_frame = pd.DataFrame(
-            data={'train_loss': self.records['train_loss']
-                , 'val_loss_MN': self.records['val_loss_MN']
-                , 'psnr_MN': self.records['psnr_MN']
-                , 'ssim_MN': self.records['ssim_MN']
-                , 'val_loss_M': self.records['val_loss_M']
-                , 'psnr_M': self.records['psnr_M']
-                , 'psnr_M': self.records['psnr_M']
-                , 'val_loss_N': self.records['val_loss_N']
-                , 'psnr_N': self.records['psnr_N']
-                , 'ssim_N': self.records['psnr_N']
-                , 'lr': self.records['lr']
-                  },
+            data,
             index=range(1, self.cur_epoch + 1)
         )
         data_frame.to_csv(os.path.join(self.records_dir, 'train_records.csv'),

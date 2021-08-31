@@ -27,13 +27,13 @@
         "val": {
             "mode": "LRHR",
             "dataroot_HR": "../SRbenchmark/HR_x4",
-            "dataroot_LR": "../SRbenchmark/0.7",
+            "dataroot_LR": "../SRbenchmark/LR_x4",
             "data_type": "img"
         },
         "val2": {
             "mode": "LRHR",
             "dataroot_HR": "../SRbenchmark/HR_x4",
-            "dataroot_LR": "../SRbenchmark/2.5",
+            "dataroot_LR": "../SRbenchmark/0.7",
             "data_type": "img"
         },
         "val3": {
@@ -47,19 +47,8 @@
             "dataroot_HR": "../SRbenchmark/HR_x4",
             "dataroot_LR": "../SRbenchmark/4.0",
             "data_type": "img"
-        },
-        "val5": {
-            "mode": "LRHR",
-            "dataroot_HR": "../SRbenchmark/HR_x4",
-            "dataroot_LR": "../SRbenchmark/5.2",
-            "data_type": "img"
-        },
-        "val6": {
-            "mode": "LRHR",
-            "dataroot_HR": "../SRbenchmark/HR_x4",
-            "dataroot_LR": "../SRbenchmark/10.3",
-            "data_type": "img"
         }
+
     },
 
     "networks": {
