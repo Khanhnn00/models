@@ -189,6 +189,14 @@ def define_net(opt):
                              num_features=opt['num_features'], num_blocks = opt['num_blocks'], res_scale=opt['res_scale'],
                              upscale_factor=opt['scale'])
 
+
+    elif which_model == 'EDSR_X2':
+        # print('EDSR')
+        from .edsr_x2 import EDSR_x2
+        net = EDSR_x2(in_channels=opt['in_channels'], out_channels=opt['out_channels'],
+                             num_features=opt['num_features'], num_blocks = opt['num_blocks'], res_scale=opt['res_scale'],
+                             upscale_factor=opt['scale'])
+
     elif which_model == 'EDSR_PLUS':
         from .edsr_mod import EDSR_PLUS
         net = EDSR_PLUS(in_channels=opt['in_channels'], out_channels=opt['out_channels'],

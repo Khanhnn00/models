@@ -183,10 +183,54 @@ class EDSR_V3(nn.Module):
         self.body = nn.Sequential(*m_body)
         self.tail = nn.Sequential(*m_tail)
 
+    # def forward(self, x, is_test=False):
+    #     # print(x.shape)
+    #     # img = img.squeeze(0).permute(1,2,0).detach().cpu().numpy()
+    #     if is_test == False:
+
+    #         noises = np.random.normal(scale=30, size=x.shape)
+    #         noises = noises.round()
+    #         ft = torch.from_numpy(noises.copy()).short().cuda()
+
+    #         x_noise = x.short() + ft.short()
+    #         x_noise = torch.clamp(x_noise, min=0, max=255).type(torch.uint8)
+
+    #         x_noise = self.sub_mean(x_noise.float())
+    #         feat_noise = self.head(x_noise)
+        
+    #         x = self.sub_mean(x)
+    #         feat_x = self.head(x)
+
+    #         body_noise = self.body(feat_noise)
+    #         body_x = self.body(feat_x)
+            
+    #         body_noise += feat_noise
+    #         body_x += feat_x
+
+    #         tail_noise = self.tail(body_noise)
+    #         tail_x = self.tail(body_x)
+
+    #         res_noise = self.add_mean(tail_noise)
+    #         res_x = self.add_mean(tail_x)
+
+    #         return res_noise, feat_noise, res_x, feat_x
+    #     else:
+    #         x = self.sub_mean(x)
+    #         x = self.head(x)
+
+    #         res = self.body(x)
+    #         res += x
+
+    #         x = self.tail(res)
+    #         x = self.add_mean(x)
+
+    #         return x 
+
     def forward(self, x, is_test=False):
         # print(x.shape)
         # img = img.squeeze(0).permute(1,2,0).detach().cpu().numpy()
         if is_test == False:
+            
             noises = np.random.normal(scale=30, size=x.shape)
             noises = noises.round()
             ft = torch.from_numpy(noises.copy()).short().cuda()

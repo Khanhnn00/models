@@ -36,12 +36,6 @@ class SRSolver4(BaseSolver):
                         'val_loss_4': [],
                         'psnr_4': [],
                         'ssim_4': [],
-                        'val_loss_5': [],
-                        'psnr_5': [],
-                        'ssim_5': [],
-                        'val_loss_6': [],
-                        'psnr_6': [],
-                        'ssim_6': [],
                         'lr': []
         }
 
@@ -133,10 +127,10 @@ class SRSolver4(BaseSolver):
                 # print(output[2].shape)
                 # print(output[3].shape)
                 # print(split_HR.shape)
-                loss_feat = self.criterion_pix(output[1], output[3])
+                # loss_feat = self.criterion_pix(output[1], output[3])
                 loss_sr_noise = self.criterion_pix(output[0], split_HR)
                 loss_sr_x = self.criterion_pix(output[2], split_HR)
-                loss_sbatch = loss_feat + loss_sr_noise + loss_sr_x
+                loss_sbatch = loss_sr_noise + loss_sr_x
 
                 loss_sbatch /= self.split_batch
                 loss_sbatch.backward()
@@ -412,12 +406,6 @@ class SRSolver4(BaseSolver):
                 , 'val_loss_4': self.records['val_loss_4']
                 , 'psnr_4': self.records['psnr_4']
                 , 'ssim_4': self.records['ssim_4']
-                , 'val_loss_5': self.records['val_loss_5']
-                , 'psnr_5': self.records['psnr_5']
-                , 'ssim_5': self.records['ssim_5']
-                , 'val_loss_6': self.records['val_loss_6']
-                , 'psnr_6': self.records['psnr_6']
-                , 'ssim_6': self.records['ssim_6']
                 , 'lr': self.records['lr']
                   },
             index=range(1, self.cur_epoch + 1)
