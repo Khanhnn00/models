@@ -113,26 +113,30 @@ def main():
 
                 if opt["save_image"]:
                     solver.save_current_visual(epoch, iter)
-
-            solver_log['records']['val_loss_{}'.format(i)]= []
-            solver_log['records']['psnr_{}'.format(i)] = []
-            solver_log['records']['ssim_{}'.format(i)] = []
+            if 'val_loss_{}'.format(i) not in solver_log['records']:
+                solver_log['records']['val_loss_{}'.format(i)]= []
+            if 'psnr_{}'.format(i) not in solver_log['records']:
+                solver_log['records']['psnr_{}'.format(i)] = []
+            if 'ssim_{}'.format(i) not in solver_log['records']:
+                solver_log['records']['ssim_{}'.format(i)] = []
+            
             solver_log['records']['val_loss_{}'.format(i)].append(sum(val_loss_list)/len(val_loss_list))
             solver_log['records']['psnr_{}'.format(i)].append(sum(psnr_list)/len(psnr_list))
             solver_log['records']['ssim_{}'.format(i)].append(sum(ssim_list)/len(ssim_list))
 
         # record the best epoch
         epoch_is_best = False
+        # print(solver_log['records']['psnr_5'])
         if solver_log['best_pred'] < solver_log['records']['psnr_5'][epoch-1]:
             solver_log['best_pred'] = solver_log['records']['psnr_5'][epoch-1]
             epoch_is_best = True
             solver_log['best_epoch'] = epoch
-        print(type(solver_log['records']['psnr_5'][epoch-1]))
-        print(type(solver_log['records']['psnr_5'][epoch-1]))
-        print(type(solver_log['records']['psnr_5'][epoch-1]))
-        print(type(solver_log['records']['psnr_5'][epoch-1]))
-        print(type(solver_log['records']['psnr_5'][epoch-1]))
-        print(solver_log['best_epoch'])
+        # print(type(solver_log['records']['psnr_5'][epoch-1]))
+        # print(type(solver_log['records']['psnr_5'][epoch-1]))
+        # print(type(solver_log['records']['psnr_5'][epoch-1]))
+        # print(type(solver_log['records']['psnr_5'][epoch-1]))
+        # print(type(solver_log['records']['psnr_5'][epoch-1]))
+        # print(solver_log['best_epoch'])
 
         print("[%s] PSNR: %.2f   SSIM: %.4f   Loss: %.6f   Best PSNR: %.2f in Epoch: [%d]" % (val_set.name(),
                                                                                               solver_log['records']['psnr_5'][epoch-1],
