@@ -18,7 +18,7 @@
             "kernel": "../dataset/kernel_blur",
             "data_type": "npy",
             "n_workers": 0,
-            "batch_size": 48,
+            "batch_size": 30,
             "LR_size": 48,
             "use_flip": true,
             "use_rot": true,
@@ -74,8 +74,8 @@
         "split_batch": 2,
         "save_ckp_step": 50,
         "save_vis_step": 1,
-        "pretrain": null,
-        "pretrained_path": "./experiments/EDSR_abla_1/epochs/last_ckp.pth",
+        "pretrain": "resume",
+        "pretrained_path": "./experiments/EDSR_V4_in3f256_x4/epochs/last_ckp.pth",
         "cl_weights": [1.0, 1.0, 1.0, 1.0]
     }
 }

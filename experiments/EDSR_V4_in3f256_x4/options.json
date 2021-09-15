@@ -30,7 +30,7 @@
     "val": {
       "mode": "LRHR",
       "dataroot_HR": "../SRbenchmark/HR_x4",
-      "dataroot_LR": "../SRbenchmark/0.7",
+      "dataroot_LR": "../SRbenchmark/LR_x4",
       "data_type": "img",
       "phase": "val",
       "scale": 4,
@@ -39,7 +39,7 @@
     "val2": {
       "mode": "LRHR",
       "dataroot_HR": "../SRbenchmark/HR_x4",
-      "dataroot_LR": "../SRbenchmark/2.5",
+      "dataroot_LR": "../SRbenchmark/0.7",
       "data_type": "img",
       "phase": "val2",
       "scale": 4,
@@ -60,24 +60,6 @@
       "dataroot_LR": "../SRbenchmark/4.0",
       "data_type": "img",
       "phase": "val4",
-      "scale": 4,
-      "rgb_range": 255
-    },
-    "val5": {
-      "mode": "LRHR",
-      "dataroot_HR": "../SRbenchmark/HR_x4",
-      "dataroot_LR": "../SRbenchmark/5.2",
-      "data_type": "img",
-      "phase": "val5",
-      "scale": 4,
-      "rgb_range": 255
-    },
-    "val6": {
-      "mode": "LRHR",
-      "dataroot_HR": "../SRbenchmark/HR_x4",
-      "dataroot_LR": "../SRbenchmark/10.3",
-      "data_type": "img",
-      "phase": "val6",
       "scale": 4,
       "rgb_range": 255
     }
@@ -119,7 +101,7 @@
       1.0
     ]
   },
-  "timestamp": "210815-083724",
+  "timestamp": "210818-095026",
   "path": {
     "exp_root": "experiments/EDSR_V4_in3f256_x4",
     "epochs": "experiments/EDSR_V4_in3f256_x4/epochs",

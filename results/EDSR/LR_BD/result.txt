@@ -1,7 +1,7 @@
-[1/5] baby_HR_x4.png_x4.png || PSNR(dB)/SSIM: 32.27/0.8666 || Timer: 0.0305 sec .
-[2/5] bird_HR_x4.png_x4.png || PSNR(dB)/SSIM: 31.04/0.8979 || Timer: 0.0236 sec .
-[3/5] butterfly_HR_x4.png_x4.png || PSNR(dB)/SSIM: 23.23/0.8061 || Timer: 0.0230 sec .
-[4/5] head_HR_x4.png_x4.png || PSNR(dB)/SSIM: 31.99/0.7654 || Timer: 0.0276 sec .
-[5/5] woman_HR_x4.png_x4.png || PSNR(dB)/SSIM: 27.39/0.8611 || Timer: 0.0270 sec .
+[1/5] baby_HR_x4.png_x4.png || PSNR(dB)/SSIM: 31.34/0.8502 || Timer: 0.0252 sec .
+[2/5] bird_HR_x4.png_x4.png || PSNR(dB)/SSIM: 29.46/0.8599 || Timer: 0.0220 sec .
+[3/5] butterfly_HR_x4.png_x4.png || PSNR(dB)/SSIM: 21.75/0.7243 || Timer: 0.0331 sec .
+[4/5] head_HR_x4.png_x4.png || PSNR(dB)/SSIM: 31.27/0.7474 || Timer: 0.0229 sec .
+[5/5] woman_HR_x4.png_x4.png || PSNR(dB)/SSIM: 26.17/0.8246 || Timer: 0.0223 sec .
 ---- Average PSNR(dB) /SSIM /Speed(s) for [LR_BD] ----
-PSNR: 29.18      SSIM: 0.8394      Speed: 0.0264
+PSNR: 28.00      SSIM: 0.8013      Speed: 0.0251

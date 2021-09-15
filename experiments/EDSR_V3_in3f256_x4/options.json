@@ -17,7 +17,7 @@
       "dataroot_LR": "../dataset/result/LR_x4_npy",
       "data_type": "npy",
       "n_workers": 0,
-      "batch_size": 32,
+      "batch_size": 48,
       "LR_size": 48,
       "use_flip": true,
       "use_rot": true,
@@ -26,30 +26,57 @@
       "scale": 4,
       "rgb_range": 255
     },
-    "val3": {
+    "val1": {
       "mode": "LRHR",
       "dataroot_HR": "../SRbenchmark/HR_x4",
-      "dataroot_LR": "../SRbenchmark/LR_BD",
+      "dataroot_LR": "../SRbenchmark/LR_x4",
       "data_type": "img",
-      "phase": "val3",
+      "phase": "val1",
       "scale": 4,
       "rgb_range": 255
     },
     "val2": {
       "mode": "LRHR",
       "dataroot_HR": "../SRbenchmark/HR_x4",
-      "dataroot_LR": "../SRbenchmark/LR_x4",
+      "dataroot_LR": "../SRbenchmark/LR_BD",
       "data_type": "img",
       "phase": "val2",
       "scale": 4,
       "rgb_range": 255
     },
-    "val": {
+    "val3": {
       "mode": "LRHR",
       "dataroot_HR": "../SRbenchmark/HR_x4",
-      "dataroot_LR": "../SRbenchmark/LR_DN",
+      "dataroot_LR": "../SRbenchmark/LR_x4_10",
       "data_type": "img",
-      "phase": "val",
+      "phase": "val3",
+      "scale": 4,
+      "rgb_range": 255
+    },
+    "val4": {
+      "mode": "LRHR",
+      "dataroot_HR": "../SRbenchmark/HR_x4",
+      "dataroot_LR": "../SRbenchmark/LR_x4_20",
+      "data_type": "img",
+      "phase": "val4",
+      "scale": 4,
+      "rgb_range": 255
+    },
+    "val5": {
+      "mode": "LRHR",
+      "dataroot_HR": "../SRbenchmark/HR_x4",
+      "dataroot_LR": "../SRbenchmark/LR_x4_30",
+      "data_type": "img",
+      "phase": "val5",
+      "scale": 4,
+      "rgb_range": 255
+    },
+    "val6": {
+      "mode": "LRHR",
+      "dataroot_HR": "../SRbenchmark/HR_x4",
+      "dataroot_LR": "../SRbenchmark/LR_x4_40",
+      "data_type": "img",
+      "phase": "val6",
       "scale": 4,
       "rgb_range": 255
     }
@@ -80,10 +107,10 @@
     "num_epochs": 500,
     "skip_threshold": 3,
     "split_batch": 2,
-    "save_ckp_step": 50,
+    "save_ckp_step": 250,
     "save_vis_step": 1,
     "pretrain": null,
-    "pretrained_path": "./experiments/EDSR_in3f256_x4/epochs/last_ckp.pth",
+    "pretrained_path": "./experiments/EDSR_abla_1/epochs/last_ckp.pth",
     "cl_weights": [
       1.0,
       1.0,
@@ -91,7 +118,7 @@
       1.0
     ]
   },
-  "timestamp": "210514-073341",
+  "timestamp": "210831-122606",
   "path": {
     "exp_root": "experiments/EDSR_V3_in3f256_x4",
     "epochs": "experiments/EDSR_V3_in3f256_x4/epochs",

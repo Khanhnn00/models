@@ -10,7 +10,7 @@ from solvers import create_solver, create_solver_split, create_solver_v2, create
 from data import create_dataloader
 from data import create_dataset
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "6,7"
+os.environ["CUDA_VISIBLE_DEVICES"] = "4"
 
 def main():
     parser = argparse.ArgumentParser(description='Train Super Resolution Models')
@@ -42,7 +42,7 @@ def main():
             print('===> Train Dataset: %s   Number of images: [%d]' % (train_set.name(), len(train_set)))
             if train_loader is None: raise ValueError("[Error] The training data does not exist")
 
-        elif phase.find('val') > 0:
+        elif phase.find('val') == 0:
             val_set = create_dataset(dataset_opt)
             val_loader = create_dataloader(val_set, dataset_opt)
             loader_list.append(val_loader)
