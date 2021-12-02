@@ -14,8 +14,8 @@ import os.path as osp
 
 from multiprocessing.dummy import Pool as ThreadPool
 
-train_HR_dir = '../../dataset/DIV_noise'
-save_dir = '../../dataset/result_noise'
+train_HR_dir = '../../SRbenchmark/Set14_HR'
+save_dir = '../../SRbenchmark/Set14_LR'
 
 if not osp.isdir(save_dir):
 	os.mkdir(save_dir)
@@ -27,9 +27,9 @@ starttime = datetime.datetime.now()
 
 save_HR_path = os.path.join(save_dir, 'HR_x4')
 save_LR_path = os.path.join(save_dir, 'LR_x4')
-os.mkdir(save_HR_path)
-os.mkdir(save_LR_path)
-file_list = sorted(glob(os.path.join(train_HR_dir, '*.png')))
+# os.mkdir(save_HR_path)
+# os.mkdir(save_LR_path)
+file_list = sorted(glob(os.path.join(train_HR_dir, '*.bmp')))
 HR_size = [100, 0.8, 0.7, 0.6, 0.5]
 
 
@@ -49,6 +49,14 @@ def save_HR_LR(img, size, path, idx):
 	misc.imsave(save_HR_path + '/' + rot180img_path, rot180_img)
 	misc.imsave(save_LR_path + '/' + x4_img_path, x4_img)
 	misc.imsave(save_LR_path + '/' + x4_rot180img_path, x4_rot180_img)
+
+def save_HR_LR_2(img, size, path, idx):
+	HR_img = modcrop(img, 4)
+	x4_img = misc.imresize(HR_img, 1 / 4, interp='bicubic')
+	img_path = path.split('/')[-1].split('.')[0] + '.bmp'
+	# misc.imsave(save_HR_path + '/' + img_path, HR_img)
+	misc.imsave(save_dir + '/' + img_path, x4_img)
+
 
 
 def modcrop(image, scale=4):
@@ -70,10 +78,11 @@ def main(path):
 	img = imageio.imread(path)
 	idx = 0
 	for size in HR_size:
-		save_HR_LR(img, size, path, idx)
+		# save_HR_LR(img, size, path, idx)
+		save_HR_LR_2(img, size, path, idx)
 		idx += 1
 
-items = file_list	
+items = file_list
 pool = ThreadPool()
 pool.map(main, items)
 pool.close()

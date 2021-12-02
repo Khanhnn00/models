@@ -99,13 +99,13 @@ class RCAN_V3(nn.Module):
         self.body = nn.Sequential(*modules_body)
         self.tail = nn.Sequential(*modules_tail)
 
-    def forward(self, x, is_test=False):
+    def forward(self, x, x_noise, is_test=False):
         if is_test== False:
-            noises = np.random.normal(scale=30, size=x.shape)
-            noises = noises.round()
-            ft = torch.from_numpy(noises.copy()).short().cuda()
-            x_noise = x.short() + ft.short()
-            x_noise = torch.clamp(x_noise, min=0, max=255).type(torch.uint8).float()
+            # noises = np.random.normal(scale=30, size=x.shape)
+            # noises = noises.round()
+            # ft = torch.from_numpy(noises.copy()).short().cuda()
+            # x_noise = x.short() + ft.short()
+            # x_noise = torch.clamp(x_noise, min=0, max=255).type(torch.uint8).float()
 
             x = self.sub_mean(x)
             feat_x = self.head(x)

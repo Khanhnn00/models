@@ -7,24 +7,16 @@ from solvers import create_solver, create_solver_v4, create_solver_v3
 from data import create_dataloader
 from data import create_dataset
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "3"
+os.environ["CUDA_VISIBLE_DEVICES"] = "4"
 
 def main():
     parser = argparse.ArgumentParser(description='Test Super Resolution Models')
     # parser.add_argument('-opt', type=str, required=True, help='Path to options JSON file.')
     # opt = option.parse(parser.parse_args().opt)
     # opt = option.parse('./options/test/test_EDSR.json')
-    opt = option.parse('./options/test/test_EDSR_x2.json')
-    # opt = option.parse('./options/test/test_EDSR_v3.json')
-    # opt = option.parse('./options/test/test_EDSR_mod.json')
-    # opt = option.parse('./options/test/test_DPBN_mod.json')
-    # opt = option.parse('./options/test/test_RDN.json')
-    # opt = option.parse('./options/test/test_DPBN.json')
-    # opt = option.parse('./options/test/test_DPBN.json')
-    # opt = option.parse('./options/test/test_RCAN.json')
-    # opt = option.parse('./options/test/test_RCAN_v3.json')
-    # opt = option.parse('./options/test/test_RCAN_DN.json')
-
+    opt = option.parse('./options/test/test_RCAN.json')
+    # opt = option.parse('./options/test/test_EDSR_v4.json')
+    # opt = option.parse('./options/test/test_RCAN_v4.json')
 
     opt = option.dict_to_nonedict(opt)
 

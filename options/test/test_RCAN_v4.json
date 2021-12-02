@@ -1,0 +1,121 @@
+{
+    "mode": "sr",
+    "use_cl": false,
+    "gpu_ids": [0],
+
+    "scale": 4,
+    "degradation": "BI",
+    "is_train": false,
+    "use_chop": true,
+    "rgb_range": 255,
+    "self_ensemble": false,
+
+    "datasets": {
+            "Set5": {
+                "mode": "LRHR",
+                "dataroot_HR": "../SRbenchmark/HR_x4",
+                "dataroot_LR": "../SRbenchmark/LR_x4",
+                "data_type": "img"
+            },
+            "Set5_20": {
+                "mode": "LRHR",
+                "dataroot_HR": "../SRbenchmark/HR_x4",
+                "dataroot_LR": "../SRbenchmark/LR_x4_20",
+                "data_type": "img"
+            },
+            "Set5_30": {
+                "mode": "LRHR",
+                "dataroot_HR": "../SRbenchmark/HR_x4",
+                "dataroot_LR": "../SRbenchmark/LR_x4_30",
+                "data_type": "img"
+            },
+            "Set5_40": {
+                "mode": "LRHR",
+                "dataroot_HR": "../SRbenchmark/HR_x4",
+                "dataroot_LR": "../SRbenchmark/LR_x4_40",
+                "data_type": "img"
+            },
+            "Set5_non": {
+                "mode": "LRHR",
+                "dataroot_HR": "../SRbenchmark/HR_x4",
+                "dataroot_LR": "../SRbenchmark/LR_x4_non",
+                "data_type": "img"
+            },
+            "BSD100": {
+                "mode": "LRHR",
+                "dataroot_HR": "../SRbenchmark/BSD100_HR",
+                "dataroot_LR": "../SRbenchmark/BSD100_LR",
+                "data_type": "img"
+            },
+            "BSD100_20": {
+                "mode": "LRHR",
+                "dataroot_HR": "../SRbenchmark/BSD100_HR",
+                "dataroot_LR": "../SRbenchmark/BSD100_LR_20",
+                "data_type": "img"
+            },
+            "BSD100_30": {
+                "mode": "LRHR",
+                "dataroot_HR": "../SRbenchmark/BSD100_HR",
+                "dataroot_LR": "../SRbenchmark/BSD100_LR_30",
+                "data_type": "img"
+            },
+            "BSD100_40": {
+                "mode": "LRHR",
+                "dataroot_HR": "../SRbenchmark/BSD100_HR",
+                "dataroot_LR": "../SRbenchmark/BSD100_LR_40",
+                "data_type": "img"
+            },
+            "BSD100_non": {
+                "mode": "LRHR",
+                "dataroot_HR": "../SRbenchmark/BSD100_HR",
+                "dataroot_LR": "../SRbenchmark/BSD100_LR_non",
+                "data_type": "img"
+            },
+            "Set14": {
+                "mode": "LRHR",
+                "dataroot_HR": "../SRbenchmark/Set14_HR",
+                "dataroot_LR": "../SRbenchmark/Set14_LR",
+                "data_type": "img"
+            },
+            "Set14_20": {
+                "mode": "LRHR",
+                "dataroot_HR": "../SRbenchmark/Set14_HR",
+                "dataroot_LR": "../SRbenchmark/Set14_LR_20",
+                "data_type": "img"
+            },
+            "Set14_30": {
+                "mode": "LRHR",
+                "dataroot_HR": "../SRbenchmark/Set14_HR",
+                "dataroot_LR": "../SRbenchmark/Set14_LR_30",
+                "data_type": "img"
+            },
+            "Set14_40": {
+                "mode": "LRHR",
+                "dataroot_HR": "../SRbenchmark/Set14_HR",
+                "dataroot_LR": "../SRbenchmark/Set14_LR_40",
+                "data_type": "img"
+            },
+            "Set14_non": {
+                "mode": "LRHR",
+                "dataroot_HR": "../SRbenchmark/Set14_HR",
+                "dataroot_LR": "../SRbenchmark/Set14_LR_non",
+                "data_type": "img"
+            }
+        },
+
+        "networks": {
+            "which_model": "RCAN_V3",
+            "num_features": 64,
+            "in_channels": 3,
+            "out_channels": 3,
+            "num_blocks": 20,
+            "res_scale": 1,
+            "num_groups": 5,
+            "reduction": 16,
+            "rgb_range": 255
+        },
+
+    "solver": {
+        "pretrained_path": "./experiments/RCAN_V4_in3f64_x4/epochs/best_ckp.pth"
+    }
+}

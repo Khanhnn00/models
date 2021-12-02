@@ -18,11 +18,11 @@
       "kernel": "../dataset/kernel_blur",
       "data_type": "npy",
       "n_workers": 0,
-      "batch_size": 48,
+      "batch_size": 32,
       "LR_size": 48,
       "use_flip": true,
       "use_rot": true,
-      "noise": ".",
+      "noise": "G",
       "phase": "train",
       "scale": 4,
       "rgb_range": 255
@@ -39,7 +39,7 @@
     "val2": {
       "mode": "LRHR",
       "dataroot_HR": "../SRbenchmark/HR_x4",
-      "dataroot_LR": "../SRbenchmark/0.7",
+      "dataroot_LR": "../SRbenchmark/LR_x4_10",
       "data_type": "img",
       "phase": "val2",
       "scale": 4,
@@ -48,7 +48,7 @@
     "val3": {
       "mode": "LRHR",
       "dataroot_HR": "../SRbenchmark/HR_x4",
-      "dataroot_LR": "../SRbenchmark/3.1",
+      "dataroot_LR": "../SRbenchmark/LR_x4_20",
       "data_type": "img",
       "phase": "val3",
       "scale": 4,
@@ -57,7 +57,7 @@
     "val4": {
       "mode": "LRHR",
       "dataroot_HR": "../SRbenchmark/HR_x4",
-      "dataroot_LR": "../SRbenchmark/4.0",
+      "dataroot_LR": "../SRbenchmark/LR_x4_30",
       "data_type": "img",
       "phase": "val4",
       "scale": 4,
@@ -93,7 +93,7 @@
     "save_ckp_step": 50,
     "save_vis_step": 1,
     "pretrain": null,
-    "pretrained_path": "./experiments/EDSR_abla_1/epochs/last_ckp.pth",
+    "pretrained_path": "./experiments/EDSR_V4_in3f256_x4/epochs/last_ckp.pth",
     "cl_weights": [
       1.0,
       1.0,
@@ -101,7 +101,7 @@
       1.0
     ]
   },
-  "timestamp": "210818-095026",
+  "timestamp": "211108-125730",
   "path": {
     "exp_root": "experiments/EDSR_V4_in3f256_x4",
     "epochs": "experiments/EDSR_V4_in3f256_x4/epochs",

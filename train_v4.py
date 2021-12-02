@@ -10,16 +10,17 @@ from solvers import create_solver, create_solver_split, create_solver_v2, create
 from data import create_dataloader
 from data import create_dataset
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "4"
+os.environ["CUDA_VISIBLE_DEVICES"] = "6"
 
 def main():
     parser = argparse.ArgumentParser(description='Train Super Resolution Models')
     #	parser.add_argument('-opt', type=str, required=True, help='Path to options JSON file.')
     #	opt = option.parse(parser.parse_args().opt)
     # opt = option.parse('options/train/train_EDSR_v3.json')
-    opt = option.parse('options/train/train_EDSR_v4.json')
+    # opt = option.parse('options/train/train_EDSR_v4.json')
     # opt = option.parse('options/train/train_RDN_v3.json')
     # opt = option.parse('options/train/train_RCAN.json')
+    opt = option.parse('options/train/train_RCAN_v4.json')
     # opt = option.parse('options/train/train_RDN.json')
     # opt = option.parse('options/train/train_DBPN_mod.json')
     # opt = option.parse('options/train/train_RDN.json')
@@ -51,11 +52,7 @@ def main():
         else:
             raise NotImplementedError("[Error] Dataset phase [%s] in *.json is not recognized." % phase)
 
-    # solver = create_solver_v3(opt)
-    # solver = create_solver_split(opt) #for mod
-    # solver = create_solver_v2(opt)    #for ablation
     solver = create_solver_v4(opt)
-    # solver = create_solver(opt)
     scale = opt['scale']
     model_name = opt['networks']['which_model'].upper()
     print(model_name)
@@ -131,33 +128,8 @@ def main():
                     solver_log['best_epoch'] = epoch
             cnt +=1 
 
-        # record the best epoch
-        # epoch_is_best = False
-        # if solver_log['best_pred'] < (sum( solver_log['records']['psnr_2'][epoch-1])/len(solver_log['records']['psnr_2'][epoch-1])):
-        #     solver_log['best_pred'] = (sum(solver_log['records']['psnr_2'][epoch-1])/len(solver_log['records']['psnr_2'][epoch-1]))
-        #     epoch_is_best = True
-        #     solver_log['best_epoch'] = epoch
-
-        # epoch_is_best = False
-        # if epoch ==1:
-        #     epoch_is_best = True
-        #     solver_log['best_pred'] = (sum(train_loss_list)/len(train_set))
-        #     solver_log['best_epoch'] = epoch
-        # else:
-        #     if solver_log['best_pred'] > (sum(train_loss_list)/len(train_set)):
-        #         solver_log['best_pred'] = (sum(train_loss_list)/len(train_set))
-        #         epoch_is_best = True
-        #         solver_log['best_epoch'] = epoch
-
-
-        # print("[%s] PSNR: %.2f   SSIM: %.4f   Loss: %.6f   Best PSNR: %.2f in Epoch: [%d]" % (val_set.name(),
-        #                                                                                       sum(psnr_list_MN)/len(psnr_list_MN),
-        #                                                                                       sum(ssim_list_MN)/len(ssim_list_MN),
-        #                                                                                       sum(val_loss_list_MN)/len(val_loss_list_MN),
-        #                                                                                       solver_log['best_pred'],
-        #                                                                                       solver_log['best_epoch']))
                                                                                                                                              
-        print("Loss: %.6f   Best loss: %.2f in Epoch: [%d]" % ((sum(train_loss_list)/len(train_set)),
+        print("Loss: %.6f   Best PSNR: %.2f in Epoch: [%d]" % ((sum(train_loss_list)/len(train_set)),
                                                                                               solver_log['best_pred'],
                                                                                               solver_log['best_epoch']))
 

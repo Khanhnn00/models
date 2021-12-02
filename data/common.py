@@ -202,17 +202,16 @@ def get_patch_lrx(img_in, img_inx, img_tar, patch_size, scale):
 
 
 def add_noise(x, noise='.'):
+    noise_value = random.randrange(0, 31, step=10)
     if noise is not '.':
         noise_type = noise[0]
-        noise_value = int(noise[1:])
+        # noise_value = int(noise[1:])
         if noise_type == 'G':
             noises = np.random.normal(scale=noise_value, size=x.shape)
             noises = noises.round()
         elif noise_type == 'S':
             noises = np.random.poisson(x * noise_value) / noise_value
             noises = noises - noises.mean(axis=0).mean(axis=0)
-        elif noise_type == 'BD':
-            s = np.random.normal(mu, sigma, 1000)
         x_noise = x.astype(np.int16) + noises.astype(np.int16)
         x_noise = x_noise.clip(0, 255).astype(np.uint8)
         return x_noise

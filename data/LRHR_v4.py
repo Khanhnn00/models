@@ -21,7 +21,7 @@ class LRHRDataset(data.Dataset):
         self.paths_HR, self.paths_LR = None, None
 
         # change the length of train dataset (influence the number of iterations in each epoch)
-        self.repeat = 1
+        self.repeat = 2
 
         # read image list from image/binary files
         self.paths_HR = common.get_image_paths(self.opt['data_type'], self.opt['dataroot_HR'])
@@ -35,9 +35,9 @@ class LRHRDataset(data.Dataset):
 
 
     def __getitem__(self, idx):
-        lr, lrx, hr, lr_path, hr_path = self._load_file(idx)
+        lr, hr, lr_path, hr_path = self._load_file(idx)
         if self.train:
-            lr, lrx, hr = self._get_patch(lr, lrx, hr)
+            lr, lrx, hr = self._get_patch(lr, hr)
         lr_tensor, lrx_tensor, hr_tensor = common.np2Tensor([lr, lrx, hr], self.opt['rgb_range'])
         return {'LR': lr_tensor, 'LRx': lrx_tensor, 'HR': hr_tensor, 'LR_path': lr_path, 'HR_path': hr_path}
 
@@ -62,18 +62,19 @@ class LRHRDataset(data.Dataset):
         hr_path = self.paths_HR[idx]
         lr = common.read_img(lr_path, self.opt['data_type'])
         hr = common.read_img(hr_path, self.opt['data_type'])
-        lrx = common.degradation(hr, self.opt['kernel'], 10)
+        # lrx = common.add_noise(lr)
+        # lrx = common.degradation(hr, self.opt['kernel'], 10)
 
-        return lr, lrx, hr, lr_path, hr_path
+        return lr, hr, lr_path, hr_path
 
 
-    def _get_patch(self, lr, lrx, hr):
+    def _get_patch(self, lr, hr):
 
         LR_size = self.opt['LR_size']
         # random crop and augment
-        lr, lrx, hr = common.get_patch_lrx(
-            lr, lrx, hr, LR_size, self.scale)
-        lr, lrx, hr = common.augment([lr, lrx, hr])
-        # lr = common.add_noise(lr, self.opt['noise'])
+        lr, hr = common.get_patch(
+            lr, hr, LR_size, self.scale)
+        lr, hr = common.augment([lr, hr])
+        lrx = common.add_noise(lr, 'G')
 
         return lr, lrx, hr

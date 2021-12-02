@@ -18,11 +18,11 @@
             "kernel": "../dataset/kernel_blur",
             "data_type": "npy",
             "n_workers": 0,
-            "batch_size": 30,
+            "batch_size": 16,
             "LR_size": 48,
             "use_flip": true,
             "use_rot": true,
-            "noise": "."
+            "noise": "G"
         },
         "val": {
             "mode": "LRHR",
@@ -33,19 +33,19 @@
         "val2": {
             "mode": "LRHR",
             "dataroot_HR": "../SRbenchmark/HR_x4",
-            "dataroot_LR": "../SRbenchmark/0.7",
+            "dataroot_LR": "../SRbenchmark/LR_x4_10",
             "data_type": "img"
         },
         "val3": {
             "mode": "LRHR",
             "dataroot_HR": "../SRbenchmark/HR_x4",
-            "dataroot_LR": "../SRbenchmark/3.1",
+            "dataroot_LR": "../SRbenchmark/LR_x4_20",
             "data_type": "img"
         },
         "val4": {
             "mode": "LRHR",
             "dataroot_HR": "../SRbenchmark/HR_x4",
-            "dataroot_LR": "../SRbenchmark/4.0",
+            "dataroot_LR": "../SRbenchmark/LR_x4_30",
             "data_type": "img"
         }
 

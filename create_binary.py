@@ -70,7 +70,7 @@ data_type = 'npy'
 # dataroot_LR = '../dataset/Flickr2K/Flickr2K_LR_bicubic/X4'
 # dataroot_valid = '../dataset/DIV2K/DIV2K_valid_HR'
 
-dataroot_HR = '../dataset/result_noise/HR_x4'
-dataroot_LR = '../dataset/result_noise/LR_x4'
+dataroot_HR = '../dataset/result/HR_x4'
+dataroot_LR = '../dataset/result/LR_x4'
 get_image_paths(data_type, dataroot_HR)
 get_image_paths(data_type, dataroot_LR)

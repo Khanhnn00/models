@@ -165,10 +165,9 @@ And I will add to a batch of tensors
 
 '''
 
-old_pth_HR = '/storageStudents/K2017/tiepnv/khanhnn/docker/dataset/result/HR_x4'
-new_pth_HR = '/storageStudents/K2017/tiepnv/khanhnn/docker/dataset/result/HR_BIDN'
-old_pth_LR = '/storageStudents/K2017/tiepnv/khanhnn/docker/dataset/result/LR_x4'
-new_pth_HR = '/storageStudents/K2017/tiepnv/khanhnn/docker/dataset/result/LR_BIDN'
+
+LR = '../SRbenchmark/LR_x4'
+LR_noise = '/storageStudents/K2017/tiepnv/khanhnn/docker/dataset/result/LR_BIDN'
 def addNoise(pth):
     folder = os.listdir(url)
     names = []

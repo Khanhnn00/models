@@ -10,15 +10,15 @@ from solvers import create_solver, create_solver_split, create_solver_v2, create
 from data import create_dataloader
 from data import create_dataset
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "6,7"
+os.environ["CUDA_VISIBLE_DEVICES"] = "4,5"
 
 def main():
     parser = argparse.ArgumentParser(description='Train Super Resolution Models')
     #	parser.add_argument('-opt', type=str, required=True, help='Path to options JSON file.')
     #	opt = option.parse(parser.parse_args().opt)
-    opt = option.parse('options/train/train_EDSR_v3.json')
+    # opt = option.parse('options/train/train_EDSR_v3.json')
     # opt = option.parse('options/train/train_RDN_v3.json')
-    # opt = option.parse('options/train/train_RCAN.json')
+    opt = option.parse('options/train/train_RCAN.json')
     # opt = option.parse('options/train/train_RDN.json')
     # opt = option.parse('options/train/train_DBPN_mod.json')
     # opt = option.parse('options/train/train_RDN.json')
@@ -50,10 +50,7 @@ def main():
         else:
             raise NotImplementedError("[Error] Dataset phase [%s] in *.json is not recognized." % phase)
 
-    solver = create_solver_v3(opt)
-    # solver = create_solver_split(opt) #for mod
-    # solver = create_solver_v2(opt)    #for ablation
-    # solver = create_solver(opt)
+    solver = create_solver(opt)
     scale = opt['scale']
     model_name = opt['networks']['which_model'].upper()
     print(model_name)
@@ -96,52 +93,36 @@ def main():
 
         print('===> Validating...',)
 
+        epoch_is_best = False
         for i, val_loader in enumerate(loader_list):
-            val_loss_list = []
-            psnr_list = []
-            ssim_list = []
+            val_loss = []
+            val_psnr = []
+            val_ssim = []
+
             for iter, batch in enumerate(val_loader):
                 solver.feed_data(batch)
                 iter_loss = solver.test()
-                val_loss_list.append(iter_loss)
+                val_loss.append(iter_loss)
 
                 # calculate evaluation metrics
                 visuals = solver.get_current_visual()
                 psnr, ssim = util.calc_metrics(visuals['SR'], visuals['HR'], crop_border=scale, test_Y=True)
-                psnr_list.append(psnr)
-                ssim_list.append(ssim)
+                val_psnr.append(psnr)
+                val_ssim.append(ssim)
 
                 if opt["save_image"]:
                     solver.save_current_visual(epoch, iter)
-            if 'val_loss_{}'.format(i) not in solver_log['records']:
-                solver_log['records']['val_loss_{}'.format(i)]= []
-            if 'psnr_{}'.format(i) not in solver_log['records']:
-                solver_log['records']['psnr_{}'.format(i)] = []
-            if 'ssim_{}'.format(i) not in solver_log['records']:
-                solver_log['records']['ssim_{}'.format(i)] = []
-            
-            solver_log['records']['val_loss_{}'.format(i)].append(sum(val_loss_list)/len(val_loss_list))
-            solver_log['records']['psnr_{}'.format(i)].append(sum(psnr_list)/len(psnr_list))
-            solver_log['records']['ssim_{}'.format(i)].append(sum(ssim_list)/len(ssim_list))
 
-        # record the best epoch
-        epoch_is_best = False
-        # print(solver_log['records']['psnr_5'])
-        if solver_log['best_pred'] < solver_log['records']['psnr_5'][epoch-1]:
-            solver_log['best_pred'] = solver_log['records']['psnr_5'][epoch-1]
-            epoch_is_best = True
-            solver_log['best_epoch'] = epoch
-        # print(type(solver_log['records']['psnr_5'][epoch-1]))
-        # print(type(solver_log['records']['psnr_5'][epoch-1]))
-        # print(type(solver_log['records']['psnr_5'][epoch-1]))
-        # print(type(solver_log['records']['psnr_5'][epoch-1]))
-        # print(type(solver_log['records']['psnr_5'][epoch-1]))
-        # print(solver_log['best_epoch'])
+            solver_log['records']['val_loss_{}'.format(i)].append(sum(val_loss)/len(val_loss))
+            solver_log['records']['psnr_{}'.format(i)].append(sum(val_psnr)/len(val_psnr))
+            solver_log['records']['ssim_{}'.format(i)].append(sum(val_ssim)/len(val_ssim))
+            if i == 0:
+                if solver_log['best_pred'] < sum(val_psnr)/len(val_psnr):
+                    solver_log['best_pred'] = sum(val_psnr)/len(val_psnr)
+                    epoch_is_best = True
+                    solver_log['best_epoch'] = epoch
 
-        print("[%s] PSNR: %.2f   SSIM: %.4f   Loss: %.6f   Best PSNR: %.2f in Epoch: [%d]" % (val_set.name(),
-                                                                                              solver_log['records']['psnr_5'][epoch-1],
-                                                                                              solver_log['records']['ssim_5'][epoch-1],
-                                                                                              solver_log['records']['val_loss_5'][epoch-1],
+        print("Loss: %.6f   Best PSNR: %.2f in Epoch: [%d]" % ((sum(train_loss_list)/len(train_set)),
                                                                                               solver_log['best_pred'],
                                                                                               solver_log['best_epoch']))
                                                                                                                                                                        

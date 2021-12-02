@@ -12,52 +12,40 @@
 
     "datasets": {
         "train": {
-            "mode": "LRHR_v4",
+            "mode": "LRHR_V4",
             "dataroot_HR": "../dataset/result/HR_x4_npy",
             "dataroot_LR": "../dataset/result/LR_x4_npy",
             "kernel": "../kernel_blur",
             "data_type": "npy",
-            "n_workers": 4,
-            "batch_size": 28,
+            "n_workers": 0,
+            "batch_size": 32,
             "LR_size": 48,
             "use_flip": true,
             "use_rot": true,
-            "noise": "."
+            "noise": "G"
         },
         "val": {
             "mode": "LRHR",
             "dataroot_HR": "../SRbenchmark/HR_x4",
-            "dataroot_LR": "../SRbenchmark/0.7",
+            "dataroot_LR": "../SRbenchmark/LR_x4",
             "data_type": "img"
         },
         "val2": {
             "mode": "LRHR",
             "dataroot_HR": "../SRbenchmark/HR_x4",
-            "dataroot_LR": "../SRbenchmark/2.5",
+            "dataroot_LR": "../SRbenchmark/LR_x4_10",
             "data_type": "img"
         },
         "val3": {
             "mode": "LRHR",
             "dataroot_HR": "../SRbenchmark/HR_x4",
-            "dataroot_LR": "../SRbenchmark/3.1",
+            "dataroot_LR": "../SRbenchmark/LR_x4_20",
             "data_type": "img"
         },
         "val4": {
             "mode": "LRHR",
             "dataroot_HR": "../SRbenchmark/HR_x4",
-            "dataroot_LR": "../SRbenchmark/4.0",
-            "data_type": "img"
-        },
-        "val5": {
-            "mode": "LRHR",
-            "dataroot_HR": "../SRbenchmark/HR_x4",
-            "dataroot_LR": "../SRbenchmark/5.2",
-            "data_type": "img"
-        },
-        "val6": {
-            "mode": "LRHR",
-            "dataroot_HR": "../SRbenchmark/HR_x4",
-            "dataroot_LR": "../SRbenchmark/10.3",
+            "dataroot_LR": "../SRbenchmark/LR_x4_30",
             "data_type": "img"
         }
     },
